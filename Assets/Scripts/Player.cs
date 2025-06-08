@@ -39,42 +39,13 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Читаем текущее значение осей в каждом фрейме
         Vector2 movement = _playerInput.actions["Move"].ReadValue<Vector2>();
         Move(movement);
 
-        if (_isAbleToJump)
-        {
-            anim.SetBool("jumping", false);
-        }
-        else {
-            anim.SetBool("jumping", true);   
-        }
-
-        float currentMaxVelocity = (_isRunning ?  _maxRunVelocity : _maxWalkingVelocity);
-
-        if (_rigidbody.linearVelocity.magnitude > currentMaxVelocity)
-        {
-            _rigidbody.linearVelocity = _rigidbody.linearVelocity.normalized * currentMaxVelocity;
-        }
+        checkVelocity();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if ((_ground.value & (1 << collision.gameObject.layer)) != 0)
-        {
-            Debug.Log("grounded");
-            _isAbleToJump = true;
-        }
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if ((_ground.value & (1 << collision.gameObject.layer)) != 0)
-        {
-            Debug.Log("ungrounded");
-            _isAbleToJump = false;
-        }
-    }
+    
 
     public void TryToJump()
     {
@@ -85,7 +56,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void Move(Vector2 direction)
+    private void Move(Vector2 direction) // Движение игрока
     {
         if (_isRunning)
         {
@@ -101,15 +72,32 @@ public class Player : MonoBehaviour
 
         if (right > 0 && !_isRight)
         {
-            Flip();
+            flip();
         }
         else if (right < 0 && _isRight)
         {
-            Flip();
+            flip();
         }
         anim.SetFloat("moveX", Mathf.Abs(direction.x));
     }
 
+    private void flip() // меняет направление игрока - с лева на право, и с право на лево
+    {
+        _isRight = !_isRight;
+        var transform = GetComponent<Transform>();
+        transform.localScale = new Vector3(transform.localScale.x * (-1), transform.localScale.y, 0f);
+    }
+    private void checkVelocity() // Смотрит, чтобы скорость не превышала допустимую
+    {
+        float currentMaxVelocity = (_isRunning ? _maxRunVelocity : _maxWalkingVelocity);
+
+        if (_rigidbody.linearVelocity.magnitude > currentMaxVelocity)
+        {
+            _rigidbody.linearVelocity = _rigidbody.linearVelocity.normalized * currentMaxVelocity;
+        }
+    }
+
+    // Функции, которые подписаны на события ввода
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
         TryToJump();
@@ -126,12 +114,23 @@ public class Player : MonoBehaviour
         anim.SetBool("running", false);
     }
 
-    private void Flip()
-    {
-        _isRight = !_isRight;
-        var transform = GetComponent<Transform>();
-        transform.localScale = new Vector3(transform.localScale.x * (-1), transform.localScale.y, 0f);
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if ((_ground.value & (1 << collision.gameObject.layer)) != 0) // Обработка того, что мы взаимодействуем с землёй
+        {
+            Debug.Log("grounded");
+            _isAbleToJump = true;
+            anim.SetBool("jumping", false);
+        }
     }
-    
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if ((_ground.value & (1 << collision.gameObject.layer)) != 0) // Обработка того, что мы взаимодействуем с землёй
+        {
+            Debug.Log("ungrounded");
+            _isAbleToJump = false;
+            anim.SetBool("jumping", true);
+        }
+    }
 }
