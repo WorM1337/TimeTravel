@@ -175,6 +175,7 @@ public class Player : MonoBehaviour
 
     private void OnRunPerformed(InputAction.CallbackContext context)
     {
+        Debug.Log("qweeewq");
         _isRunning = true;
         anim.SetBool("running", true);
     }

@@ -29,6 +29,11 @@ public class CameraManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
         }
 
         for (int i = 0; i < _cinemachineCameras.Length; i++)
