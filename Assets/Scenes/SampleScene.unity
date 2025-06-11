@@ -3130,11 +3130,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 187b82259e5edf94899aa7b8f9333ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _walkForce: 15
-  _runForce: 30
-  _forceOfJump: 25
-  _maxWalkingVelocity: 20
-  _maxRunVelocity: 35
+  _walkVelocity: 15
+  _runVelocity: 30
+  _timeOfStartMoving: 0.4
+  _maxVelocityY: 50
+  _maxJumpTime: 0.5
+  _startJumpVelocity: 25
+  _interraptedJumpVelocity: 15
   _ground:
     serializedVersion: 2
     m_Bits: 64
@@ -3170,7 +3172,7 @@ Rigidbody2D:
   m_Mass: 3
   m_LinearDamping: 0
   m_AngularDamping: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 2
   m_Material: {fileID: 6200000, guid: e1efab96cbcda8042b2ee04be6eedb61, type: 2}
   m_IncludeLayers:
     serializedVersion: 2

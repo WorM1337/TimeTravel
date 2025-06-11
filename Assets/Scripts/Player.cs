@@ -5,12 +5,16 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    [Header("Transformer Params")]
-    [SerializeField] private float _walkForce = 15.0f;
-    [SerializeField] private float _runForce = 30.0f;
-    [SerializeField] private float _forceOfJump = 1.0f;
-    [SerializeField] private float _maxWalkingVelocity = 20f;
-    [SerializeField] private float _maxRunVelocity = 35f;
+    [Header("Walking and Running")]
+    [SerializeField] private float _walkVelocity = 15.0f;
+    [SerializeField] private float _runVelocity = 30.0f;
+    [SerializeField] private float _timeOfStartMoving = 0.5f;
+    [Header("Jumping")]
+    [SerializeField] private float _maxVelocityY = 50f;
+    [SerializeField] private float _maxJumpTime = 2f;
+    [SerializeField] private float _startJumpVelocity = 15f;
+    [SerializeField] private float _interraptedJumpVelocity = 15f;
+
     [Header("Layer Mask")]
     [SerializeField] private LayerMask _ground;
     [Header("Camera Follow")]
@@ -18,12 +22,16 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject _cameraFollowGO;
     private CameraFollowObject _cameraFollowObject;
     private float _fallSpeedYDampingChangeThreshold;
-
+    
     private bool _isAbleToJump = false;
     public bool IsRight = true;
     private bool _isRunning = false;
+    private bool _isJumping = false;
 
     
+
+    private float _jumpTimeCounter = 0;
+    private float _moveTimeCounter = 0;
 
     // —сылка на PlayerInput
     private PlayerInput _playerInput;
@@ -41,6 +49,7 @@ public class Player : MonoBehaviour
 
         var jumpAction = _playerInput.actions["Jump"];
         jumpAction.performed += OnJumpPerformed;
+        jumpAction.canceled += OnJumpCanceled;
 
         var runAction = _playerInput.actions["Run"];
         runAction.performed += OnRunPerformed;
@@ -51,12 +60,12 @@ public class Player : MonoBehaviour
     private void Update()
     {
         // if we are falling past a certain speed threashold
-        if(_rigidbody.linearVelocityY < _fallSpeedYDampingChangeThreshold && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
+        if (_rigidbody.linearVelocityY < _fallSpeedYDampingChangeThreshold && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
         {
             CameraManager.instance.LerpYDamping(true);
         }
 
-        if(_rigidbody.linearVelocityY >= 0f && !CameraManager.instance.IsLerpingYDamping && CameraManager.instance.LerpedFromPlayerFalling)
+        if (_rigidbody.linearVelocityY >= 0f && !CameraManager.instance.IsLerpingYDamping && CameraManager.instance.LerpedFromPlayerFalling)
         {
             CameraManager.instance.LerpedFromPlayerFalling = false;
 
@@ -66,19 +75,48 @@ public class Player : MonoBehaviour
     private void FixedUpdate()
     {
         Vector2 movement = _playerInput.actions["Move"].ReadValue<Vector2>();
-        Move(movement);
+
+        if (movement.x == 0f) _moveTimeCounter = 0;
+        else _moveTimeCounter += Time.deltaTime;
+            Move(movement);
 
         checkVelocity();
+        TryToHoldJump();
     }
 
-    
+
 
     public void TryToJump()
     {
         if (_isAbleToJump)
         {
             _isAbleToJump = false;
-            _rigidbody.AddForce(Vector2.up * _forceOfJump, ForceMode2D.Impulse);
+            _isJumping = true;
+
+            // Ћогика через velocity
+
+            _jumpTimeCounter = _maxJumpTime;
+
+            _rigidbody.linearVelocityY = _startJumpVelocity;
+
+            //_rigidbody.AddForce(Vector2.up * _forceOfJump, ForceMode2D.Impulse);
+        }
+        
+    }
+    private void TryToHoldJump()
+    {
+        if (_isJumping)
+        {
+            if (_jumpTimeCounter > 0)
+            {
+                _rigidbody.linearVelocityY = Mathf.Lerp(_startJumpVelocity, 0, 1 - _jumpTimeCounter / _maxJumpTime);
+                _jumpTimeCounter -= Time.deltaTime;
+            }
+            else
+            {
+                _isJumping = false;
+            }
+
         }
     }
 
@@ -86,13 +124,15 @@ public class Player : MonoBehaviour
     {
         if (_isRunning)
         {
-            _rigidbody.AddForce(direction * _runForce);
+            _rigidbody.linearVelocityX = direction.x * (_moveTimeCounter > _timeOfStartMoving ?
+                _runVelocity : Mathf.Lerp(0, _runVelocity, _moveTimeCounter/_timeOfStartMoving));
         }
         else
         {
-            _rigidbody.AddForce(direction * _walkForce);
+            _rigidbody.linearVelocityX = direction.x * (_moveTimeCounter > _timeOfStartMoving ?
+                _walkVelocity : Mathf.Lerp(0, _walkVelocity, _moveTimeCounter / _timeOfStartMoving));
         }
-            
+
 
         float right = direction.x;
 
@@ -111,16 +151,14 @@ public class Player : MonoBehaviour
     {
         IsRight = !IsRight;
         var transform = GetComponent<Transform>();
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 180f)%360, 0f);
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 180f) % 360, 0f);
         _cameraFollowObject.CallTurn();
     }
     private void checkVelocity() // —мотрит, чтобы скорость не превышала допустимую
     {
-        float currentMaxVelocity = (_isRunning ? _maxRunVelocity : _maxWalkingVelocity);
-
-        if (_rigidbody.linearVelocity.magnitude > currentMaxVelocity)
+        if (_rigidbody.linearVelocity.y > _maxVelocityY)
         {
-            _rigidbody.linearVelocity = _rigidbody.linearVelocity.normalized * currentMaxVelocity;
+            _rigidbody.linearVelocityY = _maxVelocityY;
         }
     }
 
@@ -128,6 +166,11 @@ public class Player : MonoBehaviour
     private void OnJumpPerformed(InputAction.CallbackContext context)
     {
         TryToJump();
+    }
+    private void OnJumpCanceled(InputAction.CallbackContext context)
+    {
+        if(_isJumping) _rigidbody.linearVelocityY = -_interraptedJumpVelocity;
+        _isJumping = false;
     }
 
     private void OnRunPerformed(InputAction.CallbackContext context)
