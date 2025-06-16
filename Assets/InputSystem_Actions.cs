@@ -1305,6 +1305,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/SlowTime".
         /// </summary>
         public InputAction @SlowTime => m_Wrapper.m_Player_SlowTime;
+        /// <summary>
         /// Provides access to the underlying input action "Player/Rewind".
         /// </summary>
         public InputAction @Rewind => m_Wrapper.m_Player_Rewind;
@@ -1788,7 +1789,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnRewind(InputAction.CallbackContext context);
-    }   
+    }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
     /// </summary>
