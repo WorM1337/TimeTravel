@@ -94,6 +94,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Rewind",
+                    "type": "Button",
+                    "id": "4906f8b7-ada5-45e1-8bfe-074894e2f4dc",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -446,6 +455,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SlowTime",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a884aafc-2fed-4291-b7d8-dcc8cc3efe07",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rewind",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

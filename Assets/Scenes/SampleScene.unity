@@ -3727,43 +3727,38 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1609147768627730563, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      propertyPath: OversizeWindow.MaxWindowSize
-      value: 5
-      objectReference: {fileID: 0}
+      propertyPath: BoundingShape2D
+      value: 
+      objectReference: {fileID: 758957120}
     - target: {fileID: 4354147036173191302, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1
+      value: 1.0000054
       objectReference: {fileID: 0}
     - target: {fileID: 4354147036173191302, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.21937013
       objectReference: {fileID: 0}
-    - target: {fileID: 5538439367495206548, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      propertyPath: Lookahead.Time
-      value: 0.717
+    - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 12.166195
       objectReference: {fileID: 0}
-    - target: {fileID: 5538439367495206548, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      propertyPath: Lookahead.Enabled
-      value: 1
+    - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 12.166195
       objectReference: {fileID: 0}
-    - target: {fileID: 5538439367495206548, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      propertyPath: Lookahead.Smoothing
-      value: 8.7
+    - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 12.166195
       objectReference: {fileID: 0}
-    - target: {fileID: 5538439367495206548, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      propertyPath: Composition.DeadZone.Enabled
-      value: 0
+    - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.8798
       objectReference: {fileID: 0}
-    - target: {fileID: 5538439367495206548, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      propertyPath: Composition.HardLimits.Enabled
-      value: 0
+    - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1.7079
       objectReference: {fileID: 0}
-    - target: {fileID: 8244331185880885841, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      propertyPath: _fallSpeedYDampingChangeThreshold
-      value: -5
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2040552210641712732, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
