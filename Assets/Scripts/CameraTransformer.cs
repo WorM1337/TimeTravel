@@ -16,7 +16,7 @@ public class CameraTransformer : MonoBehaviour
                 y = _playerTransform.position.y,
                 z = _playerTransform.position.z - 10
             };
-            Vector3 pos = Vector3.Lerp(this.transform.position, target, _movingSpeed*Time.deltaTime);
+            Vector3 pos = Vector3.Lerp(this.transform.position, target, _movingSpeed*Time.unscaledDeltaTime);
 
             this.transform.position = pos;
         }
