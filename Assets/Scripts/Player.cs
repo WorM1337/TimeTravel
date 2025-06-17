@@ -22,8 +22,8 @@ public class Player : MonoBehaviour
     [Header("Health")]
     [SerializeField] private float _maxHealth = 100f; // Максимальное здоровье
     private float _currentHealth; // Текущее здоровье
-    [SerializeField] private float _minFallHeight = 25f; // Минимальная высота для урона (3 метра)
-    [SerializeField] private float _damagePerMeter = 5.714f; // Урон за метр (вычислено ниже)
+    [SerializeField] private float _minFallHeight = 3f; // Минимальная высота для урона (3 метра)
+    [SerializeField] private float _damagePerMeter = 5.714f; // Урон за метр
 
     // Событие для уведомления UI об изменении здоровья
     public event Action<float> OnHealthChanged;
@@ -53,6 +53,9 @@ public class Player : MonoBehaviour
     private float _maxHeight; // Максимальная высота, достигнутая во время прыжка/падения
     private bool _isFalling; // Флаг, что персонаж падает
 
+    // Начальная позиция для возрождения
+    private Vector3 _spawnPosition;
+
     void Awake()
     {
         anim = GetComponent<Animator>();
@@ -76,6 +79,9 @@ public class Player : MonoBehaviour
         // Инициализация здоровья
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
+
+        // Сохраняем начальную позицию для возрождения
+        _spawnPosition = transform.position;
     }
 
     private void Update()
@@ -84,12 +90,12 @@ public class Player : MonoBehaviour
         _currentTimeOfStartMoving = _timeOfStartMoving * TimeManager.instance.SlowFactor;
 
         // Отслеживание максимальной высоты
-        if (!_isAbleToJump && _rigidbody.linearVelocityY > 0) // Если в воздухе и движемся вверх
+        if (!_isAbleToJump && _rigidbody.linearVelocityY > 0)
         {
-            _maxHeight = Mathf.Max(_maxHeight, transform.position.y); // Обновляем максимальную высоту
+            _maxHeight = Mathf.Max(_maxHeight, transform.position.y);
             _isFalling = false;
         }
-        else if (!_isAbleToJump && _rigidbody.linearVelocityY < 0) // Если падаем
+        else if (!_isAbleToJump && _rigidbody.linearVelocityY < 0)
         {
             _isFalling = true;
         }
@@ -125,7 +131,7 @@ public class Player : MonoBehaviour
             _isJumping = true;
             _jumpTimeCounter = _maxJumpTime;
             _rigidbody.linearVelocityY = _startJumpVelocity / TimeManager.instance.SlowFactor;
-            _maxHeight = transform.position.y; // Сбрасываем высоту при прыжке
+            _maxHeight = transform.position.y;
         }
     }
 
@@ -260,10 +266,9 @@ public class Player : MonoBehaviour
                 anim.SetBool("jumping", false);
             }
 
-            // Проверка урона от падения
             if (_isFalling)
             {
-                float fallHeight = _maxHeight - transform.position.y; // Высота падения
+                float fallHeight = _maxHeight - transform.position.y;
                 Debug.Log($"Высота падения: {fallHeight} метров");
 
                 if (fallHeight > _minFallHeight)
@@ -277,7 +282,7 @@ public class Player : MonoBehaviour
                     Debug.Log("Высота падения недостаточна для урона");
                 }
 
-                _isFalling = false; // Сбрасываем флаг падения
+                _isFalling = false;
             }
         }
     }
@@ -297,7 +302,41 @@ public class Player : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died");
-        // Логика смерти
+        Respawn(); // Вызываем возрождение
+    }
+
+    private void Respawn()
+    {
+        // Восстанавливаем здоровье
+        _currentHealth = _maxHealth;
+        OnHealthChanged?.Invoke(_currentHealth);
+
+        // Перемещаем в начальную позицию
+        transform.position = _spawnPosition;
+
+        // Сбрасываем физику
+        _rigidbody.linearVelocity = Vector2.zero;
+        _rigidbody.angularVelocity = 0f;
+
+        // Сбрасываем состояние
+        _isJumping = false;
+        _isRunning = false;
+        _isAbleToJump = true; // Предполагаем, что точка возрождения на земле
+        _isFalling = false;
+        _maxHeight = transform.position.y;
+        _jumpTimeCounter = 0;
+        _moveTimeCounter = 0;
+
+        // Сбрасываем анимации
+        anim.SetBool("jumping", false);
+        anim.SetBool("running", false);
+        anim.SetFloat("moveX", 0f);
+
+        // Восстанавливаем гравитацию (на случай изменений от замедления времени)
+        _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
+            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor);
+
+        Debug.Log("Player respawned at " + _spawnPosition);
     }
 
     private void OnCollisionStay2D(Collision2D collision)
