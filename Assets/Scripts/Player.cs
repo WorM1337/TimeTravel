@@ -1,7 +1,5 @@
+using System;
 using System.Collections.Generic;
-using Unity.Hierarchy;
-using Unity.VisualScripting;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +10,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float _runVelocity = 30.0f;
     [SerializeField] private float _timeOfStartMoving = 0.5f;
     private float _currentTimeOfStartMoving = 2f;
+
     [Header("Jumping")]
     [SerializeField] private float _maxVelocityY = 50f;
     [SerializeField] private float _maxJumpTime = 2f;
@@ -20,14 +19,23 @@ public class Player : MonoBehaviour
     [SerializeField] private float _interraptedJumpVelocity = 15f;
     [SerializeField] private float _minJumpDegrees = 25f;
 
+    [Header("Health")]
+    [SerializeField] private float _maxHealth = 100f; // Максимальное здоровье
+    private float _currentHealth; // Текущее здоровье
+    [SerializeField] private float _minFallHeight = 25f; // Минимальная высота для урона (3 метра)
+    [SerializeField] private float _damagePerMeter = 5.714f; // Урон за метр (вычислено ниже)
+
+    // Событие для уведомления UI об изменении здоровья
+    public event Action<float> OnHealthChanged;
+
     [Header("Layer Mask")]
     [SerializeField] private LayerMask _ground;
-    [Header("Camera Follow")]
 
+    [Header("Camera Follow")]
     [SerializeField] GameObject _cameraFollowGO;
     private CameraFollowObject _cameraFollowObject;
     private float _fallSpeedYDampingChangeThreshold;
-    
+
     private bool _isAbleToJump = false;
     public bool IsRight = true;
     private bool _isRunning = false;
@@ -35,13 +43,15 @@ public class Player : MonoBehaviour
 
     private float _jumpTimeCounter = 0;
     private float _moveTimeCounter = 0;
-
     private int _groundedCount = 0;
 
-    // Ссылка на PlayerInput
     private PlayerInput _playerInput;
     private Animator anim;
     private Rigidbody2D _rigidbody;
+
+    // Переменные для отслеживания падения
+    private float _maxHeight; // Максимальная высота, достигнутая во время прыжка/падения
+    private bool _isFalling; // Флаг, что персонаж падает
 
     void Awake()
     {
@@ -62,16 +72,28 @@ public class Player : MonoBehaviour
 
         var slowTimeAction = _playerInput.actions["SlowTime"];
         slowTimeAction.performed += OnSlowTimePerformed;
-    }
 
+        // Инициализация здоровья
+        _currentHealth = _maxHealth;
+        OnHealthChanged?.Invoke(_currentHealth);
+    }
 
     private void Update()
     {
-
         _currentMaxJumpTime = _maxJumpTime * TimeManager.instance.SlowFactor;
         _currentTimeOfStartMoving = _timeOfStartMoving * TimeManager.instance.SlowFactor;
 
-        // if we are falling past a certain speed threashold
+        // Отслеживание максимальной высоты
+        if (!_isAbleToJump && _rigidbody.linearVelocityY > 0) // Если в воздухе и движемся вверх
+        {
+            _maxHeight = Mathf.Max(_maxHeight, transform.position.y); // Обновляем максимальную высоту
+            _isFalling = false;
+        }
+        else if (!_isAbleToJump && _rigidbody.linearVelocityY < 0) // Если падаем
+        {
+            _isFalling = true;
+        }
+
         if (_rigidbody.linearVelocityY < _fallSpeedYDampingChangeThreshold && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
         {
             CameraManager.instance.LerpYDamping(true);
@@ -80,14 +102,13 @@ public class Player : MonoBehaviour
         if (_rigidbody.linearVelocityY >= 0f && !CameraManager.instance.IsLerpingYDamping && CameraManager.instance.LerpedFromPlayerFalling)
         {
             CameraManager.instance.LerpedFromPlayerFalling = false;
-
             CameraManager.instance.LerpYDamping(false);
         }
     }
+
     private void FixedUpdate()
     {
         Vector2 movement = _playerInput.actions["Move"].ReadValue<Vector2>();
-
         if (movement.x == 0f) _moveTimeCounter = 0;
         else _moveTimeCounter += Time.unscaledDeltaTime;
         Move(movement);
@@ -96,25 +117,18 @@ public class Player : MonoBehaviour
         TryToHoldJump();
     }
 
-
-
     public void TryToJump()
     {
         if (_isAbleToJump)
         {
             _isAbleToJump = false;
             _isJumping = true;
-
-            // Логика через velocity
-
             _jumpTimeCounter = _maxJumpTime;
-
             _rigidbody.linearVelocityY = _startJumpVelocity / TimeManager.instance.SlowFactor;
-
-            //_rigidbody.AddForce(Vector2.up * _forceOfJump, ForceMode2D.Impulse);
+            _maxHeight = transform.position.y; // Сбрасываем высоту при прыжке
         }
-        
     }
+
     private void TryToHoldJump()
     {
         if (_isJumping)
@@ -128,16 +142,15 @@ public class Player : MonoBehaviour
             {
                 _isJumping = false;
             }
-
         }
     }
 
-    private void Move(Vector2 direction) // Движение игрока
+    private void Move(Vector2 direction)
     {
         if (_isRunning)
         {
             _rigidbody.linearVelocityX = direction.x * (_moveTimeCounter > _currentTimeOfStartMoving ?
-                _runVelocity : Mathf.Lerp(0, _runVelocity, _moveTimeCounter/_currentTimeOfStartMoving)) / TimeManager.instance.SlowFactor;
+                _runVelocity : Mathf.Lerp(0, _runVelocity, _moveTimeCounter / _currentTimeOfStartMoving)) / TimeManager.instance.SlowFactor;
         }
         else
         {
@@ -145,9 +158,7 @@ public class Player : MonoBehaviour
                 _walkVelocity : Mathf.Lerp(0, _walkVelocity, _moveTimeCounter / _currentTimeOfStartMoving)) / TimeManager.instance.SlowFactor;
         }
 
-
         float right = direction.x;
-
         if (right > 0 && !IsRight)
         {
             flip();
@@ -159,14 +170,15 @@ public class Player : MonoBehaviour
         anim.SetFloat("moveX", Mathf.Abs(direction.x));
     }
 
-    private void flip() // меняет направление игрока - с лева на право, и с право на лево
+    private void flip()
     {
         IsRight = !IsRight;
         var transform = GetComponent<Transform>();
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 180f) % 360, 0f);
         _cameraFollowObject.CallTurn();
     }
-    private void checkVelocity() // Смотрит, чтобы скорость не превышала допустимую
+
+    private void checkVelocity()
     {
         if (_rigidbody.linearVelocity.y > _maxVelocityY / TimeManager.instance.SlowFactor)
         {
@@ -174,14 +186,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Функции, которые подписаны на события ввода
-    private void OnJumpPerformed(InputAction.CallbackContext context)
-    {
-        TryToJump();
-    }
+    private void OnJumpPerformed(InputAction.CallbackContext context) => TryToJump();
     private void OnJumpCanceled(InputAction.CallbackContext context)
     {
-        if(_isJumping) _rigidbody.linearVelocityY = -_interraptedJumpVelocity;
+        if (_isJumping) _rigidbody.linearVelocityY = -_interraptedJumpVelocity;
         _isJumping = false;
     }
 
@@ -190,17 +198,16 @@ public class Player : MonoBehaviour
         _isRunning = true;
         anim.SetBool("running", true);
     }
+
     private void OnRunCanceled(InputAction.CallbackContext context)
     {
         _isRunning = false;
         anim.SetBool("running", false);
     }
 
-
     private void OnSlowTimePerformed(InputAction.CallbackContext context)
     {
-
-        if(TimeManager.instance.CurrentTimeSpeed != TimeSpeed.Slow)
+        if (TimeManager.instance.CurrentTimeSpeed != TimeSpeed.Slow)
         {
             TimeManager.instance.EditTimeSpeed(TimeSpeed.Slow);
         }
@@ -210,40 +217,34 @@ public class Player : MonoBehaviour
         }
 
         _rigidbody.gravityScale = (TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
-            1f : 1/(TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor));
-        
+            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor));
     }
 
-    private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();    
+    private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();
 
     private bool IsGroundedCollision(Collision2D collision)
     {
-
-        var flag = false;
-
-
         if ((_ground.value & (1 << collision.gameObject.layer)) == 0) return false;
 
-        foreach(var contact in collision.contacts)
+        foreach (var contact in collision.contacts)
         {
             float angles = Vector2.Angle(Vector2.up, contact.normal);
-
             if (angles <= _minJumpDegrees)
             {
-                flag = true; break;
+                return true;
             }
         }
-        return flag;
+        return false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (IsGroundedCollision(collision)) // Обработка того, что мы взаимодействуем с землёй
+        if (IsGroundedCollision(collision))
         {
+            Debug.Log("Столкновение с землёй");
+
             _groundedCount++;
-
             var key = collision.gameObject.GetHashCode();
-
             if (_lastGroundedCollisions.ContainsKey(key))
             {
                 _lastGroundedCollisions[key] = collision;
@@ -259,35 +260,63 @@ public class Player : MonoBehaviour
                 anim.SetBool("jumping", false);
             }
 
-            
+            // Проверка урона от падения
+            if (_isFalling)
+            {
+                float fallHeight = _maxHeight - transform.position.y; // Высота падения
+                Debug.Log($"Высота падения: {fallHeight} метров");
+
+                if (fallHeight > _minFallHeight)
+                {
+                    float damage = (fallHeight - _minFallHeight) * _damagePerMeter;
+                    Debug.Log($"Урон от падения: {damage}");
+                    TakeDamage(damage);
+                }
+                else
+                {
+                    Debug.Log("Высота падения недостаточна для урона");
+                }
+
+                _isFalling = false; // Сбрасываем флаг падения
+            }
         }
     }
+
+    private void TakeDamage(float damage)
+    {
+        Debug.Log($"Урон нанесён: {damage}");
+        _currentHealth -= damage;
+        if (_currentHealth < 0) _currentHealth = 0;
+        OnHealthChanged?.Invoke(_currentHealth);
+        if (_currentHealth <= 0)
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        Debug.Log("Player died");
+        // Логика смерти
+    }
+
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (IsGroundedCollision(collision)) // Обработка того, что мы взаимодействуем с землёй
+        if (IsGroundedCollision(collision))
         {
-
             var key = collision.gameObject.GetHashCode();
-
             _lastGroundedCollisions[key] = collision;
-
-
         }
     }
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         var key = collision.gameObject.GetHashCode();
-
-        if (_lastGroundedCollisions.ContainsKey(key)) // Обработка того, что мы перестаём взаимодействовать именно с землей
+        if (_lastGroundedCollisions.ContainsKey(key))
         {
             _groundedCount--;
-
             _lastGroundedCollisions.Remove(key);
-
-            Debug.Log(_groundedCount);
-
             if (_groundedCount < 0) _groundedCount = 0;
-
             if (_groundedCount == 0)
             {
                 _isAbleToJump = false;
