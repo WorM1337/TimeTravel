@@ -253,6 +253,8 @@ public class Player : MonoBehaviour
                 _lastGroundedCollisions.Add(key, collision);
             }
 
+            Debug.Log("EnterCountGrounds " + _groundedCount + $" {collision.gameObject}");
+
             if (_groundedCount != 0)
             {
                 _isAbleToJump = true;
@@ -284,9 +286,9 @@ public class Player : MonoBehaviour
 
             _lastGroundedCollisions.Remove(key);
 
-            Debug.Log(_groundedCount);
+            Debug.Log("ExitCountGrounds " + _groundedCount + $" {collision.gameObject}");
 
-            if (_groundedCount < 0) _groundedCount = 0;
+            
 
             if (_groundedCount == 0)
             {
