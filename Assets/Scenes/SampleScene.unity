@@ -3233,43 +3233,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1995751221145506605, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
   m_PrefabInstance: {fileID: 2676760237718511020}
   m_PrefabAsset: {fileID: 0}
---- !u!70 &1904894236
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1904894228}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: e1efab96cbcda8042b2ee04be6eedb61, type: 2}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.17, y: 0.33}
-  m_Direction: 0
 --- !u!114 &1904894244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3695,7 +3658,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 145686889954545637, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.75
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 145686889954545637, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3757,6 +3720,14 @@ PrefabInstance:
       propertyPath: BoundingShape2D
       value: 
       objectReference: {fileID: 758957120}
+    - target: {fileID: 3540149188320995484, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+      propertyPath: _testCircle
+      value: 
+      objectReference: {fileID: 522926914145594238, guid: 0c39c4dac3c3ba14ba7ef5e915b298ab, type: 3}
+    - target: {fileID: 3540149188320995484, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
+      propertyPath: _groundCheckDistance
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 3833225312121329853, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -3771,11 +3742,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4354147036173191302, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.99999684
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4354147036173191302, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.6213801
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalScale.x
@@ -3791,11 +3762,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.8798
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6102613725682021324, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.7079
+      value: 1.11
       objectReference: {fileID: 0}
     - target: {fileID: 8581245030643717278, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       propertyPath: m_ActionEvents.Array.size
@@ -3813,9 +3784,6 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1995751221145506605, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1904894236}
     - targetCorrespondingSourceObject: {fileID: 1995751221145506605, guid: b07c10847387e5640ad347ac2cf13c09, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1904894244}

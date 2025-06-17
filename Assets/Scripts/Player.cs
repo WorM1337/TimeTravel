@@ -19,6 +19,11 @@ public class Player : MonoBehaviour
     [SerializeField] private float _interraptedJumpVelocity = 15f;
     [SerializeField] private float _minJumpDegrees = 25f;
 
+    [Header("Ground Detection")]
+    private Vector2 _boxCastSize; // Размер BoxCast
+    [SerializeField] private float _groundCheckDistance = 0.3f; // Расстояние проверки до земли
+    [SerializeField] private LayerMask _ground;
+
     [Header("Health")]
     [SerializeField] private float _maxHealth = 100f; // ������������ ��������
     private float _currentHealth; // ������� ��������
@@ -27,9 +32,7 @@ public class Player : MonoBehaviour
 
     // ������� ��� ����������� UI �� ��������� ��������
     public event Action<float> OnHealthChanged;
-
-    [Header("Layer Mask")]
-    [SerializeField] private LayerMask _ground;
+    
 
     [Header("Camera Follow")]
     [SerializeField] GameObject _cameraFollowGO;
@@ -43,11 +46,13 @@ public class Player : MonoBehaviour
 
     private float _jumpTimeCounter = 0;
     private float _moveTimeCounter = 0;
-    private int _groundedCount = 0;
 
     private PlayerInput _playerInput;
     private Animator anim;
     private Rigidbody2D _rigidbody;
+    private Collider2D _collider;
+
+    private Bounds _bounds;
 
     // ���������� ��� ������������ �������
     private float _maxHeight; // ������������ ������, ����������� �� ����� ������/�������
@@ -58,12 +63,19 @@ public class Player : MonoBehaviour
 
     void Awake()
     {
+
+
+        _collider = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _cameraFollowObject = _cameraFollowGO.GetComponent<CameraFollowObject>();
 
         _fallSpeedYDampingChangeThreshold = CameraManager.instance._fallSpeedYDampingChangeThreshold;
+
+        _bounds = _collider.bounds;
+
+        _boxCastSize = new Vector2(_bounds.size.x * 0.9f, 1f);
 
         var jumpAction = _playerInput.actions["Jump"];
         jumpAction.performed += OnJumpPerformed;
@@ -82,6 +94,8 @@ public class Player : MonoBehaviour
 
         // ��������� ��������� ������� ��� �����������
         _spawnPosition = transform.position;
+
+        
     }
 
     private void Update()
@@ -110,6 +124,7 @@ public class Player : MonoBehaviour
             CameraManager.instance.LerpedFromPlayerFalling = false;
             CameraManager.instance.LerpYDamping(false);
         }
+        
     }
 
     private void FixedUpdate()
@@ -118,6 +133,11 @@ public class Player : MonoBehaviour
         if (movement.x == 0f) _moveTimeCounter = 0;
         else _moveTimeCounter += Time.unscaledDeltaTime;
         Move(movement);
+
+
+        CheckGroundAnimated();
+
+
 
         checkVelocity();
         TryToHoldJump();
@@ -226,47 +246,29 @@ public class Player : MonoBehaviour
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor));
     }
 
-    private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();
 
-    private bool IsGroundedCollision(Collision2D collision)
+    private void CheckGroundAnimated()
     {
-        if ((_ground.value & (1 << collision.gameObject.layer)) == 0) return false;
+        // Начальная точка для BoxCast — так, чтобы BoxCast коробка касалась нижней части коллайдера
+        Vector2 origin = (Vector2)transform.position - new Vector2(0, _bounds.size.y/2 - _boxCastSize.y/2);
 
-        foreach (var contact in collision.contacts)
+        // Выполняем BoxCast вниз
+        RaycastHit2D hit = Physics2D.BoxCast(
+            origin,
+            _boxCastSize,
+            0f, // угол поворота
+            -Vector2.up, // направление вниз
+            _groundCheckDistance,
+            _ground
+        );
+
+        bool wasGrounded = _isAbleToJump;
+        _isAbleToJump = hit.collider != null;
+
+        // Если только что коснулись земли, обновляем анимацию и сбрасываем высоту
+        if (_isAbleToJump && !wasGrounded)
         {
-            float angles = Vector2.Angle(Vector2.up, contact.normal);
-            if (angles <= _minJumpDegrees)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (IsGroundedCollision(collision))
-        {
-            Debug.Log("������������ � �����");
-
-            _groundedCount++;
-            var key = collision.gameObject.GetHashCode();
-            if (_lastGroundedCollisions.ContainsKey(key))
-            {
-                _lastGroundedCollisions[key] = collision;
-            }
-            else
-            {
-                _lastGroundedCollisions.Add(key, collision);
-            }
-
-            Debug.Log("EnterCountGrounds " + _groundedCount + $" {collision.gameObject}");
-
-            if (_groundedCount != 0)
-            {
-                _isAbleToJump = true;
-                anim.SetBool("jumping", false);
-            }
+            anim.SetBool("jumping", false);
 
             if (_isFalling)
             {
@@ -287,7 +289,61 @@ public class Player : MonoBehaviour
                 _isFalling = false;
             }
         }
+
+        // Если только что оторвались от земли — начинается падение
+        if (!_isAbleToJump && wasGrounded)
+        {
+            anim.SetBool("jumping", true);
+        }
     }
+
+    private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();
+
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (IsGroundedCollision(collision))
+    //    {
+    //        Debug.Log("������������ � �����");
+
+    //        _groundedCount++;
+    //        var key = collision.gameObject.GetHashCode();
+    //        if (_lastGroundedCollisions.ContainsKey(key))
+    //        {
+    //            _lastGroundedCollisions[key] = collision;
+    //        }
+    //        else
+    //        {
+    //            _lastGroundedCollisions.Add(key, collision);
+    //        }
+
+    //        Debug.Log("EnterCountGrounds " + _groundedCount + $" {collision.gameObject}");
+
+    //        if (_groundedCount != 0)
+    //        {
+    //            _isAbleToJump = true;
+    //            anim.SetBool("jumping", false);
+    //        }
+
+    //        if (_isFalling)
+    //        {
+    //            float fallHeight = _maxHeight - transform.position.y;
+    //            Debug.Log($"������ �������: {fallHeight} ������");
+
+    //            if (fallHeight > _minFallHeight)
+    //            {
+    //                float damage = (fallHeight - _minFallHeight) * _damagePerMeter;
+    //                Debug.Log($"���� �� �������: {damage}");
+    //                TakeDamage(damage);
+    //            }
+    //            else
+    //            {
+    //                Debug.Log("������ ������� ������������ ��� �����");
+    //            }
+
+    //            _isFalling = false;
+    //        }
+    //    }
+    //}
 
     private void TakeDamage(float damage)
     {
@@ -341,33 +397,33 @@ public class Player : MonoBehaviour
         Debug.Log("Player respawned at " + _spawnPosition);
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (IsGroundedCollision(collision))
-        {
-            var key = collision.gameObject.GetHashCode();
-            _lastGroundedCollisions[key] = collision;
-        }
-    }
+    //private void OnCollisionStay2D(Collision2D collision)
+    //{
+    //    if (IsGroundedCollision(collision))
+    //    {
+    //        var key = collision.gameObject.GetHashCode();
+    //        _lastGroundedCollisions[key] = collision;
+    //    }
+    //}
 
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        var key = collision.gameObject.GetHashCode();
-        if (_lastGroundedCollisions.ContainsKey(key))
-        {
-            _groundedCount--;
-            _lastGroundedCollisions.Remove(key);
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    var key = collision.gameObject.GetHashCode();
+    //    if (_lastGroundedCollisions.ContainsKey(key))
+    //    {
+    //        _groundedCount--;
+    //        _lastGroundedCollisions.Remove(key);
 
-            Debug.Log("ExitCountGrounds " + _groundedCount + $" {collision.gameObject}");
+    //        Debug.Log("ExitCountGrounds " + _groundedCount + $" {collision.gameObject}");
 
             
 
-            if (_groundedCount < 0) _groundedCount = 0;
-            if (_groundedCount == 0)
-            {
-                _isAbleToJump = false;
-                anim.SetBool("jumping", true);
-            }
-        }
-    }
+    //        if (_groundedCount < 0) _groundedCount = 0;
+    //        if (_groundedCount == 0)
+    //        {
+    //            _isAbleToJump = false;
+    //            anim.SetBool("jumping", true);
+    //        }
+    //    }
+    //}
 }
