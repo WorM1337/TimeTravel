@@ -8,7 +8,7 @@ public class TimeRewindManager : MonoBehaviour
     private List<IRewindable> rewindables = new List<IRewindable>();
     private Stack<object[]> states = new Stack<object[]>();
     private float recordInterval = 0.02f;
-    [SerializeField] public float RewindDuration = 3f; // Публичное свойство для инспектора
+    [SerializeField] public float RewindDuration = 3f;
     private float recordTimer = 0f;
 
     void Awake()

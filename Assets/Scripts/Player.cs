@@ -62,6 +62,9 @@ public class Player : MonoBehaviour, IRewindable
     private Quaternion rotation;
     private Vector2 velocity;
     private float health; // Локальная переменная для сохранения здоровья
+    private float moveX;
+    private bool jumping;
+    private bool running;
 
     private Bounds _bounds;
     private float _maxHeight;
@@ -113,7 +116,11 @@ public class Player : MonoBehaviour, IRewindable
         position = transform.position;
         rotation = transform.rotation;
         velocity = _rigidbody.linearVelocity;
-        health = _currentHealth; // Сохраняем текущее здоровье
+        health = _currentHealth;
+        moveX = anim.GetFloat("moveX"); // Берем актуальные значения из аниматора
+        jumping = anim.GetBool("jumping");
+        running = anim.GetBool("running");
+        IsRight = IsRight; // Уже сохранено как поле класса
     }
 
     public object GetState()
@@ -123,7 +130,11 @@ public class Player : MonoBehaviour, IRewindable
             position = position,
             rotation = rotation,
             velocity = velocity,
-            health = health // Возвращаем сохранённое здоровье
+            health = health,
+            moveX = moveX,
+            jumping = jumping,
+            running = running,
+            isRight = IsRight
         };
     }
 
@@ -133,18 +144,26 @@ public class Player : MonoBehaviour, IRewindable
         transform.position = savedState.position;
         transform.rotation = savedState.rotation;
         _rigidbody.linearVelocity = savedState.velocity;
-        _currentHealth = savedState.health; // Восстанавливаем здоровье
-        OnHealthChanged?.Invoke(_currentHealth); // Уведомляем UI об изменении
+        _currentHealth = savedState.health;
+        OnHealthChanged?.Invoke(_currentHealth);
+        anim.SetFloat("moveX", savedState.moveX);
+        anim.SetBool("jumping", savedState.jumping);
+        anim.SetBool("running", savedState.running);
+        IsRight = savedState.isRight;
+        if (IsRight != (transform.eulerAngles.y == 0))
+        {
+            flip();
+        }
     }
 
     public void OnStartRewind()
     {
-        _rigidbody.isKinematic = true; // Отключаем физику
+        _rigidbody.isKinematic = true;
     }
 
     public void OnStopRewind()
     {
-        _rigidbody.isKinematic = false; // Включаем физику обратно
+        _rigidbody.isKinematic = false;
     }
 
     private void Update()
@@ -242,7 +261,13 @@ public class Player : MonoBehaviour, IRewindable
         {
             flip();
         }
-        anim.SetFloat("moveX", Mathf.Abs(direction.x));
+        anim.SetFloat("moveX", Mathf.Abs(direction.x)); // Устанавливаем напрямую
+        running = _isRunning; // Синхронизируем running с состоянием
+    }
+
+    private void UpdateAnimationState()
+    {
+        jumping = anim.GetBool("jumping");
     }
 
     private void flip()
@@ -364,6 +389,7 @@ public class Player : MonoBehaviour, IRewindable
         {
             anim.SetBool("jumping", true);
         }
+        UpdateAnimationState(); // Обновляем состояние анимации
     }
 
     private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();
@@ -430,11 +456,14 @@ public class Player : MonoBehaviour, IRewindable
     }
 }
 
-// Класс состояния для отката
 public class PlayerState
 {
     public Vector3 position;
     public Quaternion rotation;
     public Vector2 velocity;
-    public float health; // Делаем public для доступа
+    public float health;
+    public float moveX;
+    public bool jumping;
+    public bool running;
+    public bool isRight;
 }

@@ -6,10 +6,10 @@ public class TimeRewind : MonoBehaviour
     private TimeRewindManager manager;
     private bool isRewinding = false;
     private InputSystem_Actions inputActions;
-    private float rewindCooldown = 5f; // Кулдаун на 5 секунд
+    private float rewindCooldown = 10f;
     private float cooldownTimer = 0f;
-    private float rewindTimer = 0f; // Таймер удержания клавиши
-    [SerializeField] private AudioSource rewindAudioSource; // Для мелодии перемотки
+    private float rewindTimer = 0f;
+    [SerializeField] private AudioSource rewindAudioSource;
 
     void Awake()
     {
@@ -23,7 +23,6 @@ public class TimeRewind : MonoBehaviour
         inputActions.Player.Rewind.performed += ctx => StartRewind();
         inputActions.Player.Rewind.canceled += ctx => StopRewind();
 
-        // Проверяем, что AudioSource прикреплен
         if (rewindAudioSource == null)
         {
             rewindAudioSource = GetComponent<AudioSource>();
@@ -33,6 +32,8 @@ public class TimeRewind : MonoBehaviour
                 rewindAudioSource = gameObject.AddComponent<AudioSource>();
             }
         }
+
+        cooldownTimer = rewindCooldown;
     }
 
     void OnEnable()
@@ -49,15 +50,15 @@ public class TimeRewind : MonoBehaviour
     {
         if (cooldownTimer > 0f)
         {
-            cooldownTimer -= Time.deltaTime;
+            cooldownTimer -= Time.unscaledDeltaTime;
         }
 
         if (isRewinding)
         {
-            rewindTimer += Time.deltaTime;
+            rewindTimer += Time.unscaledDeltaTime;
             if (rewindTimer >= manager.RewindDuration)
             {
-                StopRewind(); // Принудительно останавливаем, если превышено время
+                StopRewind();
             }
         }
     }
@@ -82,7 +83,6 @@ public class TimeRewind : MonoBehaviour
         rewindTimer = 0f;
         manager.StartRewind();
 
-        // Воспроизводим мелодию
         if (rewindAudioSource != null && rewindAudioSource.clip != null)
         {
             rewindAudioSource.Play();
@@ -103,7 +103,6 @@ public class TimeRewind : MonoBehaviour
             manager.StopRewind();
             cooldownTimer = rewindCooldown;
 
-            // Останавливаем мелодию
             if (rewindAudioSource != null)
             {
                 rewindAudioSource.Stop();
