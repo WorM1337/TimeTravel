@@ -31,7 +31,7 @@ public class Player : MonoBehaviour, IRewindable
     [SerializeField] private float _minFallHeight = 3f;
     [SerializeField] private float _damagePerMeter = 5.714f;
 
-    public event Action<float> OnHealthChanged;
+    public event Action<float> OnHealthChanged; // Событие для UI
     [Header("SlowAbility")]
     [SerializeField] private float _maxSlowTime = 3f; // В секундах 
     [SerializeField] private float _culldownSlowTime = 5f;
@@ -46,7 +46,6 @@ public class Player : MonoBehaviour, IRewindable
     public bool IsRight = true;
     private bool _isRunning = false;
     private bool _isJumping = false;
-
     private bool _isSlow = false;
 
     private float _jumpTimeCounter = 0;
@@ -62,12 +61,11 @@ public class Player : MonoBehaviour, IRewindable
     private Vector3 position;
     private Quaternion rotation;
     private Vector2 velocity;
+    private float health; // Локальная переменная для сохранения здоровья
 
     private Bounds _bounds;
-
     private float _maxHeight;
     private bool _isFalling;
-
     private Vector3 _spawnPosition;
 
     void Awake()
@@ -77,7 +75,6 @@ public class Player : MonoBehaviour, IRewindable
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _cameraFollowObject = _cameraFollowGO.GetComponent<CameraFollowObject>();
-
         _fallSpeedYDampingChangeThreshold = CameraManager.instance._fallSpeedYDampingChangeThreshold;
 
         _bounds = _collider.bounds;
@@ -115,16 +112,18 @@ public class Player : MonoBehaviour, IRewindable
     {
         position = transform.position;
         rotation = transform.rotation;
-        velocity = _rigidbody.linearVelocity; // Сохраняем скорость
+        velocity = _rigidbody.linearVelocity;
+        health = _currentHealth; // Сохраняем текущее здоровье
     }
 
     public object GetState()
     {
         return new PlayerState
         {
-            position = this.position,
-            rotation = this.rotation,
-            velocity = this.velocity
+            position = position,
+            rotation = rotation,
+            velocity = velocity,
+            health = health // Возвращаем сохранённое здоровье
         };
     }
 
@@ -133,7 +132,9 @@ public class Player : MonoBehaviour, IRewindable
         var savedState = (PlayerState)state;
         transform.position = savedState.position;
         transform.rotation = savedState.rotation;
-        _rigidbody.linearVelocity = savedState.velocity; // Восстанавливаем скорость
+        _rigidbody.linearVelocity = savedState.velocity;
+        _currentHealth = savedState.health; // Восстанавливаем здоровье
+        OnHealthChanged?.Invoke(_currentHealth); // Уведомляем UI об изменении
     }
 
     public void OnStartRewind()
@@ -148,7 +149,6 @@ public class Player : MonoBehaviour, IRewindable
 
     private void Update()
     {
-        // Пропускаем, если идет перемотка
         if (TimeRewindManager.Instance != null && TimeRewindManager.Instance.IsRewinding) return;
 
         _currentMaxJumpTime = _maxJumpTime * TimeManager.instance.SlowFactor;
@@ -180,7 +180,6 @@ public class Player : MonoBehaviour, IRewindable
 
     private void FixedUpdate()
     {
-        // Пропускаем, если идет перемотка
         if (TimeRewindManager.Instance != null && TimeRewindManager.Instance.IsRewinding) return;
 
         Vector2 movement = _playerInput.actions["Move"].ReadValue<Vector2>();
@@ -283,8 +282,6 @@ public class Player : MonoBehaviour, IRewindable
 
     private void OnSlowTimePerformed(InputAction.CallbackContext context)
     {
-        
-
         if (TimeManager.instance.CurrentTimeSpeed != TimeSpeed.Slow && _isAbleToSlow)
         {
             TimeManager.instance.EditTimeSpeed(TimeSpeed.Slow);
@@ -302,11 +299,10 @@ public class Player : MonoBehaviour, IRewindable
 
     private void CheckTimeSlow()
     {
-        if(_slowTimeCounter > _maxSlowTime)
+        if (_slowTimeCounter > _maxSlowTime)
         {
             TimeManager.instance.EditTimeSpeed(TimeSpeed.Normal);
             _isSlow = false;
-
             _slowTimeCounter = 0;
             _isAbleToSlow = false;
             _slowTimeCulldownCounter = 0;
@@ -315,10 +311,10 @@ public class Player : MonoBehaviour, IRewindable
         {
             _slowTimeCounter += Time.unscaledDeltaTime;
         }
-        
-        if(!_isAbleToSlow)
+
+        if (!_isAbleToSlow)
         {
-            if(_slowTimeCulldownCounter > _culldownSlowTime)
+            if (_slowTimeCulldownCounter > _culldownSlowTime)
             {
                 _slowTimeCulldownCounter = 0;
                 _isAbleToSlow = true;
@@ -326,21 +322,19 @@ public class Player : MonoBehaviour, IRewindable
             else
             {
                 _slowTimeCulldownCounter += Time.unscaledDeltaTime;
-            }   
+            }
         }
     }
 
     private void CheckGroundAnimated()
     {
-        // Начальная точка для BoxCast — так, чтобы BoxCast коробка касалась нижней части коллайдера
-        Vector2 origin = (Vector2)transform.position - new Vector2(0, _bounds.size.y/2 - _boxCastSize.y/2);
+        Vector2 origin = (Vector2)transform.position - new Vector2(0, _bounds.size.y / 2 - _boxCastSize.y / 2);
 
-        // Выполняем BoxCast вниз
         RaycastHit2D hit = Physics2D.BoxCast(
             origin,
             _boxCastSize,
-            0f, // угол поворота
-            -Vector2.up, // направление вниз
+            0f,
+            -Vector2.up,
             _groundCheckDistance,
             _ground
         );
@@ -348,7 +342,6 @@ public class Player : MonoBehaviour, IRewindable
         bool wasGrounded = _isAbleToJump;
         _isAbleToJump = hit.collider != null;
 
-        // Если только что коснулись земли, обновляем анимацию и сбрасываем высоту
         if (_isAbleToJump && !wasGrounded)
         {
             anim.SetBool("jumping", false);
@@ -367,7 +360,6 @@ public class Player : MonoBehaviour, IRewindable
             }
         }
 
-        // Если только что оторвались от земли — начинается падение
         if (!_isAbleToJump && wasGrounded)
         {
             anim.SetBool("jumping", true);
@@ -376,21 +368,19 @@ public class Player : MonoBehaviour, IRewindable
 
     private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();
 
-
     private void TakeDamage(float damage)
     {
         _currentHealth -= damage;
-        _currentHealth = Mathf.Clamp(_currentHealth, 0f, _maxHealth); // Ограничение от 0 до maxHealth
-        OnHealthChanged?.Invoke(_currentHealth); // Уведомляем UI об изменении
+        _currentHealth = Mathf.Clamp(_currentHealth, 0f, _maxHealth);
+        OnHealthChanged?.Invoke(_currentHealth);
         Debug.Log($"Player took {damage} damage. Current health: {_currentHealth}");
 
         if (_currentHealth <= 0)
         {
-            Die(); // Пример действия при смерти
+            Die();
         }
     }
 
-    // Метод для получения лечения (опционально)
     public void Heal(float healAmount)
     {
         _currentHealth += healAmount;
@@ -420,7 +410,6 @@ public class Player : MonoBehaviour, IRewindable
         OnHealthChanged?.Invoke(_currentHealth);
 
         transform.position = _spawnPosition;
-
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.angularVelocity = 0f;
 
@@ -438,13 +427,14 @@ public class Player : MonoBehaviour, IRewindable
 
         _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor);
-
     }
 }
 
+// Класс состояния для отката
 public class PlayerState
 {
     public Vector3 position;
     public Quaternion rotation;
-    public Vector2 velocity; // Добавляем скорость
+    public Vector2 velocity;
+    public float health; // Делаем public для доступа
 }
