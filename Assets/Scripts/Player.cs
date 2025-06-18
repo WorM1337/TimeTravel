@@ -26,7 +26,7 @@ public class Player : MonoBehaviour, IRewindable
     [SerializeField] private LayerMask _ground;
 
     [Header("Health")]
-    [SerializeField] private float _maxHealth = 100f;
+    private float _maxHealth = 100f;
     private float _currentHealth;
     [SerializeField] private float _minFallHeight = 3f;
     [SerializeField] private float _damagePerMeter = 5.714f;
@@ -102,6 +102,8 @@ public class Player : MonoBehaviour, IRewindable
     void Start()
     {
         TimeRewindManager.Instance.RegisterRewindable(this);
+        _currentHealth = _maxHealth;
+        OnHealthChanged?.Invoke(_currentHealth);
     }
 
     void OnDestroy()
@@ -354,17 +356,11 @@ public class Player : MonoBehaviour, IRewindable
             if (_isFalling)
             {
                 float fallHeight = _maxHeight - transform.position.y;
-                Debug.Log($"������ �������: {fallHeight} ������");
 
                 if (fallHeight > _minFallHeight)
                 {
                     float damage = (fallHeight - _minFallHeight) * _damagePerMeter;
-                    Debug.Log($"���� �� �������: {damage}");
                     TakeDamage(damage);
-                }
-                else
-                {
-                    Debug.Log("������ ������� ������������ ��� �����");
                 }
 
                 _isFalling = false;
@@ -384,12 +380,32 @@ public class Player : MonoBehaviour, IRewindable
     private void TakeDamage(float damage)
     {
         _currentHealth -= damage;
-        if (_currentHealth < 0) _currentHealth = 0;
-        OnHealthChanged?.Invoke(_currentHealth);
+        _currentHealth = Mathf.Clamp(_currentHealth, 0f, _maxHealth); // Ограничение от 0 до maxHealth
+        OnHealthChanged?.Invoke(_currentHealth); // Уведомляем UI об изменении
+        Debug.Log($"Player took {damage} damage. Current health: {_currentHealth}");
+
         if (_currentHealth <= 0)
         {
-            Die();
+            Die(); // Пример действия при смерти
         }
+    }
+
+    // Метод для получения лечения (опционально)
+    public void Heal(float healAmount)
+    {
+        _currentHealth += healAmount;
+        _currentHealth = Mathf.Clamp(_currentHealth, 0f, _maxHealth);
+        OnHealthChanged?.Invoke(_currentHealth);
+    }
+
+    public float GetCurrentHealth()
+    {
+        return _currentHealth;
+    }
+
+    public float GetMaxHealth()
+    {
+        return _maxHealth;
     }
 
     private void Die()
@@ -423,7 +439,6 @@ public class Player : MonoBehaviour, IRewindable
         _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor);
 
-        Debug.Log("Player respawned at " + _spawnPosition);
     }
 }
 
