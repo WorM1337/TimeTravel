@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Playables;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IRewindable
 {
     [Header("Walking and Running")]
     [SerializeField] private float _walkVelocity = 15.0f;
@@ -25,12 +26,11 @@ public class Player : MonoBehaviour
     [SerializeField] private LayerMask _ground;
 
     [Header("Health")]
-    [SerializeField] private float _maxHealth = 100f; // ������������ ��������
-    private float _currentHealth; // ������� ��������
-    [SerializeField] private float _minFallHeight = 3f; // ����������� ������ ��� ����� (3 �����)
-    [SerializeField] private float _damagePerMeter = 5.714f; // ���� �� ����
+    [SerializeField] private float _maxHealth = 100f;
+    private float _currentHealth;
+    [SerializeField] private float _minFallHeight = 3f;
+    [SerializeField] private float _damagePerMeter = 5.714f;
 
-    // ������� ��� ����������� UI �� ��������� ��������
     public event Action<float> OnHealthChanged;
     
 
@@ -52,19 +52,19 @@ public class Player : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private Collider2D _collider;
 
+    private Vector3 position;
+    private Quaternion rotation;
+    private Vector2 velocity;
+
     private Bounds _bounds;
 
-    // ���������� ��� ������������ �������
-    private float _maxHeight; // ������������ ������, ����������� �� ����� ������/�������
-    private bool _isFalling; // ����, ��� �������� ������
+    private float _maxHeight;
+    private bool _isFalling;
 
-    // ��������� ������� ��� �����������
     private Vector3 _spawnPosition;
 
     void Awake()
     {
-
-
         _collider = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
         _playerInput = GetComponent<PlayerInput>();
@@ -74,7 +74,6 @@ public class Player : MonoBehaviour
         _fallSpeedYDampingChangeThreshold = CameraManager.instance._fallSpeedYDampingChangeThreshold;
 
         _bounds = _collider.bounds;
-
         _boxCastSize = new Vector2(_bounds.size.x * 0.9f, 1f);
 
         var jumpAction = _playerInput.actions["Jump"];
@@ -88,22 +87,64 @@ public class Player : MonoBehaviour
         var slowTimeAction = _playerInput.actions["SlowTime"];
         slowTimeAction.performed += OnSlowTimePerformed;
 
-        // ������������� ��������
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
-
-        // ��������� ��������� ������� ��� �����������
         _spawnPosition = transform.position;
+    }
 
-        
+    void Start()
+    {
+        TimeRewindManager.Instance.RegisterRewindable(this);
+    }
+
+    void OnDestroy()
+    {
+        TimeRewindManager.Instance.UnregisterRewindable(this);
+    }
+
+    public void SaveState()
+    {
+        position = transform.position;
+        rotation = transform.rotation;
+        velocity = _rigidbody.linearVelocity; // Сохраняем скорость
+    }
+
+    public object GetState()
+    {
+        return new PlayerState
+        {
+            position = this.position,
+            rotation = this.rotation,
+            velocity = this.velocity
+        };
+    }
+
+    public void LoadState(object state)
+    {
+        var savedState = (PlayerState)state;
+        transform.position = savedState.position;
+        transform.rotation = savedState.rotation;
+        _rigidbody.linearVelocity = savedState.velocity; // Восстанавливаем скорость
+    }
+
+    public void OnStartRewind()
+    {
+        _rigidbody.isKinematic = true; // Отключаем физику
+    }
+
+    public void OnStopRewind()
+    {
+        _rigidbody.isKinematic = false; // Включаем физику обратно
     }
 
     private void Update()
     {
+        // Пропускаем, если идет перемотка
+        if (TimeRewindManager.Instance != null && TimeRewindManager.Instance.IsRewinding) return;
+
         _currentMaxJumpTime = _maxJumpTime * TimeManager.instance.SlowFactor;
         _currentTimeOfStartMoving = _timeOfStartMoving * TimeManager.instance.SlowFactor;
 
-        // ������������ ������������ ������
         if (!_isAbleToJump && _rigidbody.linearVelocityY > 0)
         {
             _maxHeight = Mathf.Max(_maxHeight, transform.position.y);
@@ -124,21 +165,19 @@ public class Player : MonoBehaviour
             CameraManager.instance.LerpedFromPlayerFalling = false;
             CameraManager.instance.LerpYDamping(false);
         }
-        
     }
 
     private void FixedUpdate()
     {
+        // Пропускаем, если идет перемотка
+        if (TimeRewindManager.Instance != null && TimeRewindManager.Instance.IsRewinding) return;
+
         Vector2 movement = _playerInput.actions["Move"].ReadValue<Vector2>();
         if (movement.x == 0f) _moveTimeCounter = 0;
         else _moveTimeCounter += Time.unscaledDeltaTime;
         Move(movement);
 
-
         CheckGroundAnimated();
-
-
-
         checkVelocity();
         TryToHoldJump();
     }
@@ -299,55 +338,9 @@ public class Player : MonoBehaviour
 
     private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (IsGroundedCollision(collision))
-    //    {
-    //        Debug.Log("������������ � �����");
-
-    //        _groundedCount++;
-    //        var key = collision.gameObject.GetHashCode();
-    //        if (_lastGroundedCollisions.ContainsKey(key))
-    //        {
-    //            _lastGroundedCollisions[key] = collision;
-    //        }
-    //        else
-    //        {
-    //            _lastGroundedCollisions.Add(key, collision);
-    //        }
-
-    //        Debug.Log("EnterCountGrounds " + _groundedCount + $" {collision.gameObject}");
-
-    //        if (_groundedCount != 0)
-    //        {
-    //            _isAbleToJump = true;
-    //            anim.SetBool("jumping", false);
-    //        }
-
-    //        if (_isFalling)
-    //        {
-    //            float fallHeight = _maxHeight - transform.position.y;
-    //            Debug.Log($"������ �������: {fallHeight} ������");
-
-    //            if (fallHeight > _minFallHeight)
-    //            {
-    //                float damage = (fallHeight - _minFallHeight) * _damagePerMeter;
-    //                Debug.Log($"���� �� �������: {damage}");
-    //                TakeDamage(damage);
-    //            }
-    //            else
-    //            {
-    //                Debug.Log("������ ������� ������������ ��� �����");
-    //            }
-
-    //            _isFalling = false;
-    //        }
-    //    }
-    //}
 
     private void TakeDamage(float damage)
     {
-        Debug.Log($"���� ������: {damage}");
         _currentHealth -= damage;
         if (_currentHealth < 0) _currentHealth = 0;
         OnHealthChanged?.Invoke(_currentHealth);
@@ -360,70 +353,41 @@ public class Player : MonoBehaviour
     private void Die()
     {
         Debug.Log("Player died");
-        Respawn(); // �������� �����������
+        Respawn();
     }
 
     private void Respawn()
     {
-        // ��������������� ��������
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
 
-        // ���������� � ��������� �������
         transform.position = _spawnPosition;
 
-        // ���������� ������
         _rigidbody.linearVelocity = Vector2.zero;
         _rigidbody.angularVelocity = 0f;
 
-        // ���������� ���������
         _isJumping = false;
         _isRunning = false;
-        _isAbleToJump = true; // ������������, ��� ����� ����������� �� �����
+        _isAbleToJump = true;
         _isFalling = false;
         _maxHeight = transform.position.y;
         _jumpTimeCounter = 0;
         _moveTimeCounter = 0;
 
-        // ���������� ��������
         anim.SetBool("jumping", false);
         anim.SetBool("running", false);
         anim.SetFloat("moveX", 0f);
 
-        // ��������������� ���������� (�� ������ ��������� �� ���������� �������)
         _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor);
 
         Debug.Log("Player respawned at " + _spawnPosition);
     }
+}
 
-    //private void OnCollisionStay2D(Collision2D collision)
-    //{
-    //    if (IsGroundedCollision(collision))
-    //    {
-    //        var key = collision.gameObject.GetHashCode();
-    //        _lastGroundedCollisions[key] = collision;
-    //    }
-    //}
-
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    var key = collision.gameObject.GetHashCode();
-    //    if (_lastGroundedCollisions.ContainsKey(key))
-    //    {
-    //        _groundedCount--;
-    //        _lastGroundedCollisions.Remove(key);
-
-    //        Debug.Log("ExitCountGrounds " + _groundedCount + $" {collision.gameObject}");
-
-            
-
-    //        if (_groundedCount < 0) _groundedCount = 0;
-    //        if (_groundedCount == 0)
-    //        {
-    //            _isAbleToJump = false;
-    //            anim.SetBool("jumping", true);
-    //        }
-    //    }
-    //}
+public class PlayerState
+{
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector2 velocity; // Добавляем скорость
 }

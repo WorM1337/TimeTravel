@@ -1,114 +1,89 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class TimeRewind : MonoBehaviour
 {
-    [Header("Сколько секунд откатываем")]
-    public float rewindDuration = 3f;
-
-    [Header("Скорость обновления (раз в FixedUpdate)")]
-    public float recordInterval = 0.02f;
-
-    [Header("Кулдаун между откатами")]
-    public float rewindCooldown = 5f;
-
-    private float cooldownTimer = 0f;
-    private float recordTimer = 0f;
+    private TimeRewindManager manager;
     private bool isRewinding = false;
-
-    private List<TransformSnapshot> snapshots = new List<TransformSnapshot>();
-    private Rigidbody2D rb;
     private InputSystem_Actions inputActions;
+    [SerializeField] private float rewindCooldown = 5f; // Кулдаун на 5 секунд
+    private float cooldownTimer = 0f;
+    private float rewindTimer = 0f; // Таймер удержания клавиши
 
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        manager = TimeRewindManager.Instance;
+        if (manager == null)
+        {
+            Debug.LogError("TimeRewindManager.Instance is null! Ensure TimeRewindManager exists in the scene.");
+            return;
+        }
         inputActions = new InputSystem_Actions();
-        inputActions.Player.Rewind.performed += _ => TryStartRewind();
-        inputActions.Player.Rewind.canceled += _ => StopRewind();
+        inputActions.Player.Rewind.performed += ctx => StartRewind();
+        inputActions.Player.Rewind.canceled += ctx => StopRewind();
     }
 
-    void OnEnable() => inputActions.Enable();
-    void OnDisable() => inputActions.Disable();
+    void OnEnable()
+    {
+        inputActions.Enable();
+    }
+
+    void OnDisable()
+    {
+        inputActions.Disable();
+    }
 
     void Update()
     {
         if (cooldownTimer > 0f)
+        {
             cooldownTimer -= Time.deltaTime;
+        }
+
+        if (isRewinding)
+        {
+            rewindTimer += Time.deltaTime;
+            if (rewindTimer >= manager.RewindDuration)
+            {
+                StopRewind(); // Принудительно останавливаем, если превышено время
+            }
+        }
     }
 
     void FixedUpdate()
     {
-        if (isRewinding)
-            Rewind();
-        else
-            Record();
-    }
-
-    void Record()
-    {
-        recordTimer += Time.fixedDeltaTime;
-
-        if (recordTimer >= recordInterval)
+        if (isRewinding && manager != null)
         {
-            recordTimer = 0f;
-            snapshots.Insert(0, new TransformSnapshot(transform.position, transform.rotation));
-        }
-
-        float maxSnapshots = rewindDuration / recordInterval;
-        if (snapshots.Count > maxSnapshots)
-            snapshots.RemoveAt(snapshots.Count - 1);
-    }
-
-    void Rewind()
-    {
-        if (snapshots.Count > 0)
-        {
-            TransformSnapshot snapshot = snapshots[0];
-            transform.position = snapshot.position;
-            transform.rotation = snapshot.rotation;
-            snapshots.RemoveAt(0);
-        }
-        else
-        {
-            StopRewind();
-        }
-    }
-
-    public void TryStartRewind()
-    {
-        if (cooldownTimer <= 0f && snapshots.Count > 0)
-        {
-            StartRewind();
+            manager.Rewind();
         }
     }
 
     public void StartRewind()
     {
+        if (manager == null)
+        {
+            Debug.LogError("Cannot start rewind: TimeRewindManager is null!");
+            return;
+        }
+        if (cooldownTimer > 0f || isRewinding) return;
         isRewinding = true;
-        rb.isKinematic = true;
+        rewindTimer = 0f;
+        manager.StartRewind();
     }
 
     public void StopRewind()
     {
+        if (manager == null)
+        {
+            Debug.LogError("Cannot stop rewind: TimeRewindManager is null!");
+            return;
+        }
         if (isRewinding)
         {
             isRewinding = false;
-            rb.isKinematic = false;
+            rewindTimer = 0f;
+            manager.StopRewind();
             cooldownTimer = rewindCooldown;
-        }
-    }
-
-    private struct TransformSnapshot
-    {
-        public Vector3 position;
-        public Quaternion rotation;
-
-        public TransformSnapshot(Vector3 pos, Quaternion rot)
-        {
-            position = pos;
-            rotation = rot;
         }
     }
 }
