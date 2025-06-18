@@ -6,9 +6,10 @@ public class TimeRewind : MonoBehaviour
     private TimeRewindManager manager;
     private bool isRewinding = false;
     private InputSystem_Actions inputActions;
-    [SerializeField] private float rewindCooldown = 5f; // Кулдаун на 5 секунд
+    private float rewindCooldown = 5f; // Кулдаун на 5 секунд
     private float cooldownTimer = 0f;
     private float rewindTimer = 0f; // Таймер удержания клавиши
+    [SerializeField] private AudioSource rewindAudioSource; // Для мелодии перемотки
 
     void Awake()
     {
@@ -21,6 +22,17 @@ public class TimeRewind : MonoBehaviour
         inputActions = new InputSystem_Actions();
         inputActions.Player.Rewind.performed += ctx => StartRewind();
         inputActions.Player.Rewind.canceled += ctx => StopRewind();
+
+        // Проверяем, что AudioSource прикреплен
+        if (rewindAudioSource == null)
+        {
+            rewindAudioSource = GetComponent<AudioSource>();
+            if (rewindAudioSource == null)
+            {
+                Debug.LogWarning("AudioSource not found on TimeRewind object. Adding one automatically.");
+                rewindAudioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
     }
 
     void OnEnable()
@@ -69,6 +81,12 @@ public class TimeRewind : MonoBehaviour
         isRewinding = true;
         rewindTimer = 0f;
         manager.StartRewind();
+
+        // Воспроизводим мелодию
+        if (rewindAudioSource != null && rewindAudioSource.clip != null)
+        {
+            rewindAudioSource.Play();
+        }
     }
 
     public void StopRewind()
@@ -84,6 +102,12 @@ public class TimeRewind : MonoBehaviour
             rewindTimer = 0f;
             manager.StopRewind();
             cooldownTimer = rewindCooldown;
+
+            // Останавливаем мелодию
+            if (rewindAudioSource != null)
+            {
+                rewindAudioSource.Stop();
+            }
         }
     }
 }
