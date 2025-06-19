@@ -33,8 +33,7 @@ public class Player : MonoBehaviour, IRewindable
 
     public event Action<float> OnHealthChanged; // Событие для UI
     [Header("SlowAbility")]
-    [SerializeField] private float _maxSlowTime = 3f; // В секундах 
-    [SerializeField] private float _culldownSlowTime = 5f;
+    
 
     [Header("Camera Follow")]
     [SerializeField] GameObject _cameraFollowGO;
@@ -42,16 +41,15 @@ public class Player : MonoBehaviour, IRewindable
     private float _fallSpeedYDampingChangeThreshold;
 
     private bool _isAbleToJump = false;
-    private bool _isAbleToSlow = true;
+    
     public bool IsRight = true;
     private bool _isRunning = false;
     private bool _isJumping = false;
-    private bool _isSlow = false;
+    
 
     private float _jumpTimeCounter = 0;
     private float _moveTimeCounter = 0;
-    private float _slowTimeCounter = 0;
-    private float _slowTimeCulldownCounter = 0;
+    
 
     private PlayerInput _playerInput;
     private Animator anim;
@@ -91,8 +89,7 @@ public class Player : MonoBehaviour, IRewindable
         runAction.performed += OnRunPerformed;
         runAction.canceled += OnRunCanceled;
 
-        var slowTimeAction = _playerInput.actions["SlowTime"];
-        slowTimeAction.performed += OnSlowTimePerformed;
+        
 
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
@@ -194,7 +191,7 @@ public class Player : MonoBehaviour, IRewindable
             CameraManager.instance.LerpYDamping(false);
         }
 
-        CheckTimeSlow();
+        
     }
 
     private void FixedUpdate()
@@ -284,6 +281,8 @@ public class Player : MonoBehaviour, IRewindable
         {
             _rigidbody.linearVelocityY = _maxVelocityY / TimeManager.instance.SlowFactor;
         }
+        _rigidbody.gravityScale = (TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
+            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor));
     }
 
     private void OnJumpPerformed(InputAction.CallbackContext context) => TryToJump();
@@ -305,51 +304,9 @@ public class Player : MonoBehaviour, IRewindable
         anim.SetBool("running", false);
     }
 
-    private void OnSlowTimePerformed(InputAction.CallbackContext context)
-    {
-        if (TimeManager.instance.CurrentTimeSpeed != TimeSpeed.Slow && _isAbleToSlow)
-        {
-            TimeManager.instance.EditTimeSpeed(TimeSpeed.Slow);
-            _isSlow = true;
-        }
-        else
-        {
-            TimeManager.instance.EditTimeSpeed(TimeSpeed.Normal);
-            _isSlow = false;
-        }
+    
 
-        _rigidbody.gravityScale = (TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
-            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor));
-    }
-
-    private void CheckTimeSlow()
-    {
-        if (_slowTimeCounter > _maxSlowTime)
-        {
-            TimeManager.instance.EditTimeSpeed(TimeSpeed.Normal);
-            _isSlow = false;
-            _slowTimeCounter = 0;
-            _isAbleToSlow = false;
-            _slowTimeCulldownCounter = 0;
-        }
-        else if (_isSlow)
-        {
-            _slowTimeCounter += Time.unscaledDeltaTime;
-        }
-
-        if (!_isAbleToSlow)
-        {
-            if (_slowTimeCulldownCounter > _culldownSlowTime)
-            {
-                _slowTimeCulldownCounter = 0;
-                _isAbleToSlow = true;
-            }
-            else
-            {
-                _slowTimeCulldownCounter += Time.unscaledDeltaTime;
-            }
-        }
-    }
+    
 
     private void CheckGroundAnimated()
     {

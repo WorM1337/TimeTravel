@@ -78,15 +78,15 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1322179801214388602}
+  - {fileID: 9208096659404238887}
   - {fileID: 3424235468175844662}
   - {fileID: 6102613725682021324}
   - {fileID: 8907806097463751672}
   - {fileID: 1220174081550243314}
-  - {fileID: 1322179801214388602}
   - {fileID: 5777431175928771053}
   - {fileID: 8744051658191261143}
   - {fileID: 5259129669342737608}
-  - {fileID: 9208096659404238887}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &229904013775462261
@@ -568,6 +568,7 @@ GameObject:
   - component: {fileID: 6334036357753057864}
   - component: {fileID: 1007122362635931270}
   - component: {fileID: 5111429187829606944}
+  - component: {fileID: 4548809342882132834}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -616,8 +617,6 @@ MonoBehaviour:
     m_Bits: 64
   _minFallHeight: 20
   _damagePerMeter: 5.714
-  _maxSlowTime: 3
-  _culldownSlowTime: 5
   _cameraFollowGO: {fileID: 980392168755860035}
   IsRight: 1
 --- !u!114 &8581245030643717278
@@ -945,6 +944,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rewindAudioSource: {fileID: 6836380043953257196}
+--- !u!114 &4548809342882132834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995751221145506605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e67852caf23728f4c81d636294a3a912, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxSlowTime: 3
+  _culldownSlowTime: 5
 --- !u!1 &2350585007165282656
 GameObject:
   m_ObjectHideFlags: 0
