@@ -173,6 +173,28 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "Down",
+                    "id": "c3d4c89b-58b4-46b9-8c60-efdc91a86f71",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Down",
+                    "id": "c1323961-9fe7-4df8-aa47-94e7592c0ab7",
+                    "path": "<Keyboard>/downArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "1635d3fe-58b6-4ba9-a4e2-f4b964f6b5c8",
                     "path": "<XRController>/{Primary2DAxis}",

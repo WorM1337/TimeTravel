@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 
-public class Player : MonoBehaviour, IRewindable
+public class Player : MonoBehaviour, IRewindable, IPlatforming
 {
     [Header("Walking and Running")]
     [SerializeField] private float _walkVelocity = 15.0f;
@@ -24,6 +26,7 @@ public class Player : MonoBehaviour, IRewindable
     private Vector2 _boxCastSize; // Размер BoxCast
     [SerializeField] private float _groundCheckDistance = 0.3f; // Расстояние проверки до земли
     [SerializeField] private LayerMask _ground;
+    [SerializeField] private LayerMask _platform;
 
     [Header("Health")]
     private float _maxHealth = 100f;
@@ -45,10 +48,13 @@ public class Player : MonoBehaviour, IRewindable
     public bool IsRight = true;
     private bool _isRunning = false;
     private bool _isJumping = false;
+    private bool _isGettingDown = false;
     
 
     private float _jumpTimeCounter = 0;
     private float _moveTimeCounter = 0;
+
+    private HashSet<Platform> activePlatforms = new HashSet<Platform>();
     
 
     private PlayerInput _playerInput;
@@ -89,11 +95,11 @@ public class Player : MonoBehaviour, IRewindable
         runAction.performed += OnRunPerformed;
         runAction.canceled += OnRunCanceled;
 
-        
-
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
         _spawnPosition = transform.position;
+
+        ForbidCollisionForAllPlatforms();
     }
 
     void Start()
@@ -202,7 +208,13 @@ public class Player : MonoBehaviour, IRewindable
         if (movement.x == 0f) _moveTimeCounter = 0;
         else _moveTimeCounter += Time.unscaledDeltaTime;
         Move(movement);
+        TryGetDown(movement.y);
 
+        if(!_isGettingDown)
+        {
+            CheckPlatformDown();
+        }
+        
         CheckGroundAnimated();
         checkVelocity();
         TryToHoldJump();
@@ -304,11 +316,50 @@ public class Player : MonoBehaviour, IRewindable
         anim.SetBool("running", false);
     }
 
-    
+    private void TryGetDown(float movementY)
+    {
+        if (movementY == -1)
+        {
+            foreach (var platform in activePlatforms)
+            {
+                _isGettingDown = true;
+                GetDown(platform);
+            }
+            activePlatforms.Clear();
+            _rigidbody.linearVelocityY = -_interraptedJumpVelocity / TimeManager.instance.SlowFactor;
+        }
+        else
+        {
+            _isGettingDown = false;
+        }
+    }
 
-    
+    public void ForbidCollisionForAllPlatforms()
+    {
+        var listOfPlatforms = GameObject.FindGameObjectsWithTag("Platform");
 
-    private void CheckGroundAnimated()
+        foreach(var platformObj in listOfPlatforms)
+        {
+            Platform platform = platformObj.GetComponent<Platform>();
+
+            if(platform == null)
+            {
+                Debug.Log($"Платформа {platformObj.name} не имеет скрипта!");
+                continue;
+            }
+            else
+            {
+                platform.ForbidCollision(_collider);
+            }
+        }
+    }
+
+    public void GetDown(Platform platform)
+    {
+        platform.ForbidCollision(_collider);
+    }
+
+    public void CheckPlatformDown()
     {
         Vector2 origin = (Vector2)transform.position - new Vector2(0, _bounds.size.y / 2 - _boxCastSize.y / 2);
 
@@ -318,11 +369,72 @@ public class Player : MonoBehaviour, IRewindable
             0f,
             -Vector2.up,
             _groundCheckDistance,
+            _platform
+        );
+
+        if (hit.collider != null)
+        {
+            var platform = hit.collider.GetComponent<Platform>();
+
+            if (platform != null)
+            {
+                platform.AllowCollision(_collider);
+                activePlatforms.Add(platform);
+            }
+            else
+            {
+                Debug.Log("Ошибка!!! На Платформе отсутствует скрипт!");
+            }
+
+            ClearActivePlatforms(platform);
+        }
+        else
+        {
+            ClearActivePlatforms(null);
+        }
+    }
+    public void ClearActivePlatforms(Platform? current)
+    {
+
+        foreach(var platform in activePlatforms)
+        {
+            if (current != platform) platform.ForbidCollision(_collider);
+        }
+
+        if(activePlatforms.Contains(current))
+        {
+            activePlatforms = new HashSet<Platform> { current };
+        }
+        else
+        {
+            activePlatforms = new HashSet<Platform>();
+        }
+    }
+
+
+    private void CheckGroundAnimated()
+    {
+        Vector2 origin = (Vector2)transform.position - new Vector2(0, _bounds.size.y / 2 - _boxCastSize.y / 2);
+
+        RaycastHit2D hitGround = Physics2D.BoxCast(
+            origin,
+            _boxCastSize,
+            0f,
+            -Vector2.up,
+            _groundCheckDistance,
             _ground
+        );
+        RaycastHit2D hitPlatform = Physics2D.BoxCast(
+            origin,
+            _boxCastSize,
+            0f,
+            -Vector2.up,
+            _groundCheckDistance,
+            _platform
         );
 
         bool wasGrounded = _isAbleToJump;
-        _isAbleToJump = hit.collider != null;
+        _isAbleToJump = hitGround.collider != null || hitPlatform.collider != null;
 
         if (_isAbleToJump && !wasGrounded)
         {
@@ -348,8 +460,6 @@ public class Player : MonoBehaviour, IRewindable
         }
         UpdateAnimationState(); // Обновляем состояние анимации
     }
-
-    private Dictionary<int, Collision2D> _lastGroundedCollisions = new Dictionary<int, Collision2D>();
 
     private void TakeDamage(float damage)
     {
@@ -411,6 +521,8 @@ public class Player : MonoBehaviour, IRewindable
         _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor);
     }
+
+    
 }
 
 public class PlayerState
