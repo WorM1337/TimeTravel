@@ -6,10 +6,11 @@ public class TimeRewindManager : MonoBehaviour
     public static TimeRewindManager Instance { get; private set; }
     public bool IsRewinding { get; private set; }
     private List<IRewindable> rewindables = new List<IRewindable>();
-    private Stack<object[]> states = new Stack<object[]>();
+    private List<object[]> states = new List<object[]>();
     private float recordInterval = 0.02f;
     [SerializeField] public float RewindDuration = 3f;
     private float recordTimer = 0f;
+    private int maxStates;
 
     void Awake()
     {
@@ -22,6 +23,7 @@ public class TimeRewindManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        maxStates = Mathf.CeilToInt(RewindDuration / recordInterval);
     }
 
     void FixedUpdate()
@@ -55,12 +57,11 @@ public class TimeRewindManager : MonoBehaviour
             rewindables[i].SaveState();
             currentStates[i] = rewindables[i].GetState();
         }
-        states.Push(currentStates);
+        states.Add(currentStates);
 
-        // Удаляем старые состояния, чтобы ограничить длительность
-        while (states.Count > Mathf.CeilToInt(RewindDuration / recordInterval))
+        while (states.Count > maxStates)
         {
-            states.TryPop(out _);
+            states.RemoveAt(0);
         }
     }
 
@@ -68,7 +69,8 @@ public class TimeRewindManager : MonoBehaviour
     {
         if (states.Count > 0)
         {
-            object[] previousStates = states.Pop();
+            object[] previousStates = states[states.Count - 1];
+            states.RemoveAt(states.Count - 1);
             for (int i = 0; i < rewindables.Count; i++)
             {
                 rewindables[i].LoadState(previousStates[i]);
@@ -76,7 +78,7 @@ public class TimeRewindManager : MonoBehaviour
         }
         else
         {
-            StopRewind(); // Принудительно останавливаем, если состояния закончились
+            StopRewind();
         }
     }
 

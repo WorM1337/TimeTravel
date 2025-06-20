@@ -98,8 +98,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
         _spawnPosition = transform.position;
-
-        
     }
 
     void Start()
