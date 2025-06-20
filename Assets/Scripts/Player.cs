@@ -99,7 +99,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         OnHealthChanged?.Invoke(_currentHealth);
         _spawnPosition = transform.position;
 
-        ForbidCollisionForAllPlatforms();
+        
     }
 
     void Start()
@@ -107,6 +107,8 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         TimeRewindManager.Instance.RegisterRewindable(this);
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
+
+        ForbidCollisionForAllPlatforms();
     }
 
     void OnDestroy()
@@ -326,7 +328,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
                 GetDown(platform);
             }
             activePlatforms.Clear();
-            _rigidbody.linearVelocityY = -_interraptedJumpVelocity / TimeManager.instance.SlowFactor;
+            if(_isGettingDown) _rigidbody.linearVelocityY = -_interraptedJumpVelocity / TimeManager.instance.SlowFactor;
         }
         else
         {

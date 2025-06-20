@@ -615,6 +615,9 @@ MonoBehaviour:
   _ground:
     serializedVersion: 2
     m_Bits: 64
+  _platform:
+    serializedVersion: 2
+    m_Bits: 128
   _minFallHeight: 20
   _damagePerMeter: 5.714
   _cameraFollowGO: {fileID: 980392168755860035}

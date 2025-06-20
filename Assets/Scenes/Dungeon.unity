@@ -59814,9 +59814,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerAndDependencies
       objectReference: {fileID: 0}
+    - target: {fileID: 767210900787845725, guid: f36f1c4b73e4eb44d8548620b05dd81c, type: 3}
+      propertyPath: orthographic size
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 800252471050582167, guid: f36f1c4b73e4eb44d8548620b05dd81c, type: 3}
+      propertyPath: Lens.OrthographicSize
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 1840160911154722333, guid: f36f1c4b73e4eb44d8548620b05dd81c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3540149188320995484, guid: f36f1c4b73e4eb44d8548620b05dd81c, type: 3}
+      propertyPath: _maxVelocityY
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6334036357753057864, guid: f36f1c4b73e4eb44d8548620b05dd81c, type: 3}
       propertyPath: m_SortingLayer
@@ -59892,9 +59904,10 @@ GameObject:
   - component: {fileID: 1924018918}
   - component: {fileID: 1924018917}
   - component: {fileID: 1924018916}
+  - component: {fileID: 1924018919}
   m_Layer: 7
   m_Name: Platformes
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60482,6 +60495,18 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!114 &1924018919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1924018914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ef9553325e3cf2458f41644ee935a93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
