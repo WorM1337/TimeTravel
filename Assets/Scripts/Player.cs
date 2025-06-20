@@ -99,7 +99,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         OnHealthChanged?.Invoke(_currentHealth);
         _spawnPosition = transform.position;
 
-        ForbidCollisionForAllPlatforms();
     }
 
     void Start()
@@ -107,6 +106,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         TimeRewindManager.Instance.RegisterRewindable(this);
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
+        ForbidCollisionForAllPlatforms();
     }
 
     void OnDestroy()
