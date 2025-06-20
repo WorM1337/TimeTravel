@@ -11,6 +11,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
     [Header("Walking and Running")]
     [SerializeField] private float _walkVelocity = 15.0f;
     [SerializeField] private float _runVelocity = 30.0f;
+    [SerializeField] private float _maxVelocityYWhileWalking = 5f;
     [SerializeField] private float _timeOfStartMoving = 0.5f;
     private float _currentTimeOfStartMoving = 2f;
 
@@ -21,6 +22,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
     [SerializeField] private float _startJumpVelocity = 15f;
     [SerializeField] private float _interraptedJumpVelocity = 15f;
     [SerializeField] private float _minJumpDegrees = 25f;
+    [SerializeField] private float _gravityScale = 2f;
 
     [Header("Ground Detection")]
     private Vector2 _boxCastSize; // Размер BoxCast
@@ -289,12 +291,16 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
 
     private void checkVelocity()
     {
-        if (_rigidbody.linearVelocity.y > _maxVelocityY / TimeManager.instance.SlowFactor)
+        if (_isAbleToJump)
+        {
+            _rigidbody.linearVelocityY = Math.Min(_maxVelocityYWhileWalking, _rigidbody.linearVelocityY);
+        }
+        else if (_rigidbody.linearVelocity.y > _maxVelocityY / TimeManager.instance.SlowFactor)
         {
             _rigidbody.linearVelocityY = _maxVelocityY / TimeManager.instance.SlowFactor;
         }
         _rigidbody.gravityScale = (TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
-            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor));
+            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor)) * _gravityScale;
     }
 
     private void OnJumpPerformed(InputAction.CallbackContext context) => TryToJump();
@@ -519,7 +525,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         anim.SetFloat("moveX", 0f);
 
         _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
-            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor);
+            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor) * _gravityScale;
     }
 
     
