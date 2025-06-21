@@ -21,13 +21,13 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
     private float _currentMaxJumpTime = 2f;
     [SerializeField] private float _startJumpVelocity = 15f;
     [SerializeField] private float _interraptedJumpVelocity = 15f;
-    [SerializeField] private float _minJumpDegrees = 25f;
     [SerializeField] private float _gravityScale = 2f;
 
     [Header("Ground Detection")]
     private Vector2 _boxCastSize; // Размер BoxCast
     [SerializeField] private float _groundCheckDistance = 0.3f; // Расстояние проверки до земли
-    [SerializeField] private LayerMask _ground;
+    [SerializeField] private float _ceilingCheckDistance = 0.1f; // Расстояние проверки до потолка
+    [SerializeField] private LayerMask _groundAndCeiling;
     [SerializeField] private LayerMask _platform;
 
     [Header("Health")]
@@ -37,7 +37,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
     [SerializeField] private float _damagePerMeter = 5.714f;
 
     public event Action<float> OnHealthChanged; // Событие для UI
-    [Header("SlowAbility")]
     
 
     [Header("Camera Follow")]
@@ -96,6 +95,9 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         var runAction = _playerInput.actions["Run"];
         runAction.performed += OnRunPerformed;
         runAction.canceled += OnRunCanceled;
+
+        var moveAction = _playerInput.actions["Move"];
+        moveAction.performed += OnMovePerformed;
 
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
@@ -238,15 +240,25 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
     {
         if (_isJumping)
         {
-            if (_jumpTimeCounter > 0)
+            if (!CheckCeiling())
             {
-                _rigidbody.linearVelocityY = Mathf.Lerp(_startJumpVelocity, 0, 1 - _jumpTimeCounter / _currentMaxJumpTime);
-                _jumpTimeCounter -= Time.unscaledDeltaTime;
+                if (_jumpTimeCounter > 0)
+                {
+                    _rigidbody.linearVelocityY = Mathf.Lerp(_startJumpVelocity, 0, 1 - _jumpTimeCounter / _currentMaxJumpTime);
+                    _jumpTimeCounter -= Time.unscaledDeltaTime;
+                }
+                else
+                {
+                    _isJumping = false;
+                    _jumpTimeCounter = 0;
+                }
             }
             else
             {
                 _isJumping = false;
+                _rigidbody.linearVelocityY = -_interraptedJumpVelocity;
             }
+            
         }
     }
 
@@ -320,6 +332,11 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
     {
         _isRunning = false;
         anim.SetBool("running", false);
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        if(context.ReadValue<Vector2>().x != 0)_cameraFollowObject.CheckToTurn();
     }
 
     private void TryGetDown(float movementY)
@@ -417,7 +434,21 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         }
     }
 
+    private bool CheckCeiling()
+    {
+        Vector2 origin = (Vector2)transform.position + new Vector2(0, _bounds.size.y / 2 - _boxCastSize.y / 2);
 
+        RaycastHit2D hitCeiling = Physics2D.BoxCast(
+            origin,
+            _boxCastSize,
+            0f,
+            Vector2.up,
+            _ceilingCheckDistance,
+            _groundAndCeiling
+        );
+
+        return hitCeiling.collider != null;
+    }
     private void CheckGroundAnimated()
     {
         Vector2 origin = (Vector2)transform.position - new Vector2(0, _bounds.size.y / 2 - _boxCastSize.y / 2);
@@ -428,7 +459,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
             0f,
             -Vector2.up,
             _groundCheckDistance,
-            _ground
+            _groundAndCeiling
         );
         RaycastHit2D hitPlatform = Physics2D.BoxCast(
             origin,

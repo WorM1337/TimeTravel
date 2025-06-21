@@ -27,6 +27,13 @@ public class CameraFollowObject : MonoBehaviour
         transform.position = _playerTransform.position;    
     }
 
+    public void CheckToTurn()
+    {
+        if (_isFacingRight != _player.IsRight)
+        {
+            CallTurn();
+        }
+    }
     public void CallTurn()
     {
         //_turnCoroutine = StartCoroutine(FlipYLerp());

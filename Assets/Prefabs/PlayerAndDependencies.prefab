@@ -378,7 +378,7 @@ Transform:
   m_GameObject: {fileID: 1629252072539770865}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -157.91, y: 67.4, z: -10}
+  m_LocalPosition: {x: 2.5, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -604,17 +604,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _walkVelocity: 15
-  _runVelocity: 30
+  _runVelocity: 20
   _maxVelocityYWhileWalking: 5
   _timeOfStartMoving: 0.4
   _maxVelocityY: 50
   _maxJumpTime: 0.5
   _startJumpVelocity: 25
   _interraptedJumpVelocity: 10
-  _minJumpDegrees: 25
-  _gravityScale: 2
+  _gravityScale: 2.5
   _groundCheckDistance: 0.3
-  _ground:
+  _ceilingCheckDistance: 0.1
+  _groundAndCeiling:
     serializedVersion: 2
     m_Bits: 64
   _platform:
@@ -1765,7 +1765,7 @@ Transform:
   m_GameObject: {fileID: 8838333810378580559}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1, y: 0, z: -10}
+  m_LocalPosition: {x: 2.5, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1838,8 +1838,8 @@ MonoBehaviour:
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: 1, y: 0, z: 0}
-  Damping: {x: 0.75, y: 2, z: 0}
+  TargetOffset: {x: 2.5, y: 0, z: 0}
+  Damping: {x: 1, y: 2, z: 0}
   Lookahead:
     Enabled: 1
     Time: 0.05
