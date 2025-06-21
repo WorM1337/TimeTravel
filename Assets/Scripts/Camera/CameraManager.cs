@@ -10,7 +10,7 @@ public class CameraManager : MonoBehaviour
     [Header("Controls the learping the Y damping during player jump/fall")]
     [SerializeField] private float _fallPanAmount = 0.25f;
     [SerializeField] private float _fallYPanTime = 0.35f;
-    public float _fallSpeedYDampingChangeThreshold = -10f;
+    public float _fallSpeedYDampingChangeThreshold = -40f;
 
     public bool IsLerpingYDamping { get; private set; }
     public bool LerpedFromPlayerFalling { get; set; }
@@ -69,22 +69,28 @@ public class CameraManager : MonoBehaviour
         {
             endDampAmount = _fallPanAmount;
             LerpedFromPlayerFalling = true;
+
+            float elapsedTime = 0f;
+            while (elapsedTime < endDampAmount)
+            {
+
+                float lerpedPanAmount = Mathf.Lerp(startDampAmount, endDampAmount, (elapsedTime / endDampAmount));
+                _cinemachinePositionComposer.Damping.y = lerpedPanAmount;
+
+                elapsedTime += Time.unscaledDeltaTime;
+
+                yield return null;
+            }
+
         }
         else
         {
             endDampAmount = _normYPanAmount;
         }
 
-        float elapsedTime = 0f;
-        while (elapsedTime < endDampAmount)
-        {
-            elapsedTime += Time.unscaledDeltaTime;
+        
 
-            float lerpedPanAmount = Mathf.Lerp(startDampAmount, endDampAmount, (elapsedTime/_fallYPanTime));
-            _cinemachinePositionComposer.Damping.y = lerpedPanAmount;
-
-            yield return null;
-        }
+        _cinemachinePositionComposer.Damping.y = endDampAmount;
 
         IsLerpingYDamping = false;
     }

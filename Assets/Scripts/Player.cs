@@ -190,8 +190,9 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
             _isFalling = true;
         }
 
-        if (_rigidbody.linearVelocityY < _fallSpeedYDampingChangeThreshold && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
+        if (_rigidbody.linearVelocityY < _fallSpeedYDampingChangeThreshold / TimeManager.instance.SlowFactor && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
         {
+            Debug.Log(_rigidbody.linearVelocityY);
             CameraManager.instance.LerpYDamping(true);
         }
 
@@ -201,7 +202,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
             CameraManager.instance.LerpYDamping(false);
         }
 
-        
+
     }
 
     private void FixedUpdate()
@@ -307,9 +308,10 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         {
             _rigidbody.linearVelocityY = Math.Min(_maxVelocityYWhileWalking, _rigidbody.linearVelocityY);
         }
-        else if (_rigidbody.linearVelocity.y > _maxVelocityY / TimeManager.instance.SlowFactor)
+        else if (Math.Abs(_rigidbody.linearVelocity.y) > _maxVelocityY / TimeManager.instance.SlowFactor)
         {
-            _rigidbody.linearVelocityY = _maxVelocityY / TimeManager.instance.SlowFactor;
+            _rigidbody.linearVelocityY = _maxVelocityY / TimeManager.instance.SlowFactor *
+                (_rigidbody.linearVelocityY >= 0 ? 1f: -1f);
         }
         _rigidbody.gravityScale = (TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor)) * _gravityScale;

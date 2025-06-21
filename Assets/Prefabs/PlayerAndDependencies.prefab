@@ -48,7 +48,7 @@ MonoBehaviour:
   - {fileID: 800252471050582167}
   _fallPanAmount: 0.25
   _fallYPanTime: 0.35
-  _fallSpeedYDampingChangeThreshold: -10
+  _fallSpeedYDampingChangeThreshold: -15
 --- !u!1 &196943511456674008
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,7 +607,7 @@ MonoBehaviour:
   _runVelocity: 20
   _maxVelocityYWhileWalking: 5
   _timeOfStartMoving: 0.4
-  _maxVelocityY: 50
+  _maxVelocityY: 30
   _maxJumpTime: 0.5
   _startJumpVelocity: 25
   _interraptedJumpVelocity: 10
