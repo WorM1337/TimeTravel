@@ -23,7 +23,7 @@ public class ChaseState : IEnemyState
         }
         else if (!enemy.IsPlayerInSearchRadius)
         {
-            enemy.SwitchState(new PatrolState());
+            enemy.SwitchState(new IdleState());
         }
     }
 

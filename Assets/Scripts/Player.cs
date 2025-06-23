@@ -192,7 +192,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
 
         if (_rigidbody.linearVelocityY < _fallSpeedYDampingChangeThreshold / TimeManager.instance.SlowFactor && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
         {
-            Debug.Log(_rigidbody.linearVelocityY);
             CameraManager.instance.LerpYDamping(true);
         }
 

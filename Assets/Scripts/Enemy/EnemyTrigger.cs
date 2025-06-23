@@ -13,7 +13,8 @@ public class EnemyTrigger : MonoBehaviour
 
     [SerializeField] private Enemy _enemy;
 
-    private Collider2D _collider;
+    private Collider2D _collider; // Если триггер внешний - коллайдер Circle, иначе коллайдер Capsule
+                                  // И все они триггеры(isTrigger = true)!
 
 
     private void Awake()

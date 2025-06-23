@@ -1,9 +1,12 @@
+using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    
+    [Header("Player")]
     public Transform player;
+
     [Header("Searching and attack")]
     public float SearchingRadius = 5f;
     public float AttackRadiusDelta = 1.5f;
@@ -14,13 +17,18 @@ public class Enemy : MonoBehaviour
     private IEnemyState currentState;
 
 
-    
+    [Header("Moving")]
     public float moveSpeed = 3f;
-    private Rigidbody2D rb;
+    public float patrolTime = 2f;
+    [Header("Idle")]
+    public float idleTime = 2f;
+    
     private bool facingRight = true;
 
-    public bool IsPlayerInSearchRadius = false;
-    public bool IsPlayerInAttackRadius = false;
+    [NonSerialized] public bool IsPlayerInSearchRadius = false;
+    [NonSerialized] public bool IsPlayerInAttackRadius = false;
+
+    private Rigidbody2D rb;
 
     private void Awake()
     {
@@ -28,8 +36,6 @@ public class Enemy : MonoBehaviour
     }
     void Start()
     {
-        
-        
         SwitchState(new PatrolState());
     }
 
@@ -38,11 +44,12 @@ public class Enemy : MonoBehaviour
         currentState.Update();
 
         
-        if ((player.position.x > transform.position.x && !facingRight) ||
-            (player.position.x < transform.position.x && facingRight))
+        if(rb.linearVelocityX > 0f && !facingRight || rb.linearVelocityX < 0f && facingRight)
         {
             Flip();
         }
+
+        
     }
 
     public void SwitchState(IEnemyState newState)
@@ -67,8 +74,6 @@ public class Enemy : MonoBehaviour
     private void Flip()
     {
         facingRight = !facingRight;
-        Vector3 scale = transform.localScale;
-        scale.x *= -1;
-        transform.localScale = scale;
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 180f) % 360, 0f);
     }
 }

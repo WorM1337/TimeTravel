@@ -12,6 +12,9 @@ public class PatrolState : IEnemyState
         _enemy = enemy;
 
         patrolDirection = 1f; // Начинаем с движения вправо
+
+        changeDirectionTime = enemy.patrolTime;
+
         timer = changeDirectionTime;
     }
 
