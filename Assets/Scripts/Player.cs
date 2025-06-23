@@ -500,7 +500,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         UpdateAnimationState(); // Обновляем состояние анимации
     }
 
-    private void TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0f, _maxHealth);
