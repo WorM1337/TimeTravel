@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 
-public class Player : MonoBehaviour, IRewindable, IPlatforming
+public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 {
     [Header("Walking and Running")]
     [SerializeField] private float _walkVelocity = 15.0f;
@@ -192,7 +192,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
 
         if (_rigidbody.linearVelocityY < _fallSpeedYDampingChangeThreshold / TimeManager.instance.SlowFactor && !CameraManager.instance.IsLerpingYDamping && !CameraManager.instance.LerpedFromPlayerFalling)
         {
-            Debug.Log(_rigidbody.linearVelocityY);
             CameraManager.instance.LerpYDamping(true);
         }
 
@@ -500,7 +499,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming
         UpdateAnimationState(); // Обновляем состояние анимации
     }
 
-    private void TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         _currentHealth -= damage;
         _currentHealth = Mathf.Clamp(_currentHealth, 0f, _maxHealth);
