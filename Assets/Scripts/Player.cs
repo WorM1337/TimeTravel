@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 
-public class Player : MonoBehaviour, IRewindable, IPlatforming
+public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 {
     [Header("Walking and Running")]
     [SerializeField] private float _walkVelocity = 15.0f;

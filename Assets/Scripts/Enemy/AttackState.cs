@@ -9,7 +9,7 @@ public class AttackState : IEnemyState
     public void Enter(Enemy enemy)
     {
         _enemy = enemy;
-        timer = attackCooldown;
+        timer = 0;
         enemy.StopMoving();
         Debug.Log("Враг атакует!");
     }

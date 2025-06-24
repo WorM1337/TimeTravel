@@ -21,16 +21,7 @@ public class EnemyTrigger : MonoBehaviour
     {
         _collider = GetComponent<Collider2D>();
 
-        if(Type == TriggerType.Outer)
-        {
-            var collider = (_collider as CircleCollider2D);
-            collider.radius = _enemy.SearchingRadius;
-        }
-        if (Type == TriggerType.Inner)
-        {
-            var collider = (_collider as CapsuleCollider2D);
-            collider.size += new Vector2(_enemy.AttackRadiusDelta, _enemy.AttackRadiusDelta);
-        }
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

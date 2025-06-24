@@ -11,17 +11,17 @@ public class UsualDamager : DamageObstacle
 
     private Coroutine _culldownDamageProcess;
 
-    public override void DealDamage(Player player)
+    public override void DealDamage(IDamageable obj)
     {
-        player.TakeDamage(_damage);
+        obj.TakeDamage(_damage);
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (IsAbleToDealDamage)
         {
-            if (collision.collider.GetComponent<Player>() is Player player)
+            if (collision.collider.GetComponent<IDamageable>() is IDamageable obj)
             {
-                DealDamage(player);
+                DealDamage(obj);
                 _culldownDamageProcess = StartCoroutine(DamageCulldownProcess());
             }
         }
@@ -29,7 +29,7 @@ public class UsualDamager : DamageObstacle
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.collider.GetComponent<Player>() is Player player)
+        if (collision.collider.GetComponent<IDamageable>() is IDamageable obj)
         {
             StopCoroutine(_culldownDamageProcess);
             IsAbleToDealDamage = true;
