@@ -2,38 +2,33 @@ using UnityEngine;
 
 public class PatrolState : IEnemyState
 {
-    private float patrolDirection = 1f;
-    private float changeDirectionTime = 2f;
-    private float timer;
+    private float patrolDirection;
 
     private Enemy _enemy;
     public void Enter(Enemy enemy)
     {
         _enemy = enemy;
 
-        patrolDirection = 1f; // Начинаем с движения вправо
-
-        changeDirectionTime = enemy.patrolTime;
-
-        timer = changeDirectionTime;
+        patrolDirection = (enemy.facingRight ? 1f : -1f); // Начинаем с движения вправо
     }
 
     public void Update()
     {
-        Enemy enemy = _enemy;
-        timer -= Time.deltaTime;
 
-        if (timer <= 0)
+        _enemy.patrolCounter -= Time.deltaTime;
+
+        if (_enemy.patrolCounter <= 0)
         {
             patrolDirection *= -1;
-            timer = changeDirectionTime;
+            _enemy.Flip();
+            _enemy.patrolCounter = _enemy.patrolTime;
         }
 
-        enemy.MoveTowards(patrolDirection);
+        _enemy.MoveTowards(patrolDirection);
 
-        if (enemy.IsPlayerInSearchRadius)
+        if (_enemy.IsPlayerInSearchRadius)
         {
-            enemy.SwitchState(new ChaseState());
+            _enemy.SwitchState(new ChaseState());
         }
     }
 

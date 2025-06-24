@@ -15,6 +15,12 @@ public class ChaseState : IEnemyState
         Enemy enemy = _enemy;
 
         float direction = (enemy.player.position.x - enemy.transform.position.x);
+
+        if (direction < 0 && _enemy.facingRight || direction > 0 && !_enemy.facingRight)
+        {
+            _enemy.Flip();
+        }
+
         enemy.MoveTowards(Mathf.Sign(direction));
 
         if (enemy.IsPlayerInAttackRadius)

@@ -46,7 +46,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
     private bool _isAbleToJump = false;
     
-    public bool IsRight = true;
+    [NonSerialized] public bool IsRight = true;
     private bool _isRunning = false;
     private bool _isJumping = false;
     private bool _isGettingDown = false;
@@ -132,7 +132,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
     public object GetState()
     {
-        return new PlayerState
+        return new PlayerRewindState
         {
             position = position,
             rotation = rotation,
@@ -147,7 +147,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
     public void LoadState(object state)
     {
-        var savedState = (PlayerState)state;
+        var savedState = (PlayerRewindState)state;
         transform.position = savedState.position;
         transform.rotation = savedState.rotation;
         _rigidbody.linearVelocity = savedState.velocity;
@@ -563,7 +563,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     
 }
 
-public class PlayerState
+public class PlayerRewindState
 {
     public Vector3 position;
     public Quaternion rotation;

@@ -33,7 +33,7 @@ public class TimeRewind : MonoBehaviour
             }
         }
 
-        cooldownTimer = rewindCooldown;
+        cooldownTimer = 0;
     }
 
     void OnEnable()

@@ -2,7 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable
+public class Enemy : MonoBehaviour, IDamageable, IRewindable
 {
     [Header("Player")]
     public Transform player;
@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("Moving")]
     public float moveSpeed = 3f;
     public float patrolTime = 2f;
+
     [Header("Idle")]
     public float idleTime = 2f;
     [Header("UI")]
@@ -25,8 +26,10 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private float _maxHealth = 100f;
     private float _currentHealth;
+    [NonSerialized] public float patrolCounter;
 
-    private bool facingRight = true;
+    [NonSerialized] public bool facingRight = true;
+    private bool isAlive = true;
 
     private event Action<float> OnHealthChanged;
 
@@ -35,28 +38,40 @@ public class Enemy : MonoBehaviour, IDamageable
 
     private Rigidbody2D rb;
 
+    /*
+     public Vector3 position;
+    public Quaternion rotation;
+    public Vector2 velocity;
+    public float health;
+    public bool isRight;
+    public IEnemyState enemyState;
+     */
+    private Vector3 positionForRewind;
+    private Quaternion rotationForRewind;
+    private Vector2 velocityForRewind;
+    private float healthForRewind;
+    private bool isRightForRewind;
+    private IEnemyState enemyStateForRewind;
+    private bool isAliveForRewind;
+    private bool healthBarIsActiveForRewind;
+    private float patrolCounterForRewind;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         OnHealthChanged += _healthBarEnemy.SetHealthUI;
         _currentHealth = _maxHealth;
+        patrolCounter = patrolTime;
     }
     void Start()
     {
         SwitchState(new PatrolState());
+        TimeRewindManager.Instance.RegisterRewindable(this);
     }
+    
 
     void Update()
     {
         currentState.Update();
-
-        
-        if(rb.linearVelocityX > 0f && !facingRight || rb.linearVelocityX < 0f && facingRight)
-        {
-            Flip();
-        }
-
-        
     }
 
     public void SwitchState(IEnemyState newState)
@@ -78,7 +93,7 @@ public class Enemy : MonoBehaviour, IDamageable
         rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
     }
 
-    private void Flip()
+    public void Flip()
     {
         facingRight = !facingRight;
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, (transform.eulerAngles.y + 180f) % 360, 0f);
@@ -132,6 +147,87 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         // Анимации
 
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
+
+    #region Rewind Logic
+    public void SaveState()
+    {
+        positionForRewind = transform.position;
+        rotationForRewind = transform.rotation;
+        velocityForRewind = rb.linearVelocity;
+        healthForRewind = _currentHealth;
+        isRightForRewind = facingRight;
+        enemyStateForRewind = currentState;
+        isAliveForRewind = isAlive;
+        healthBarIsActiveForRewind = _healthBarIsActive;
+        patrolCounterForRewind = patrolCounter;
+    }
+
+    public object GetState()
+    {
+        return new EnemyRewindState
+        {
+            position = positionForRewind,
+            rotation = rotationForRewind,
+            velocity = velocityForRewind,
+            health = healthForRewind,
+            isRight = isRightForRewind,
+            enemyState = enemyStateForRewind,
+            isAlive = isAliveForRewind,
+            healthBarIsActive = healthBarIsActiveForRewind,
+            patrolCounter = patrolCounterForRewind
+        };
+    }
+
+    public void LoadState(object state)
+    {
+        var savedState = (EnemyRewindState)state;
+
+        isAlive = savedState.isAlive;
+        gameObject.SetActive(isAlive);
+
+        transform.position = savedState.position;
+        transform.rotation = savedState.rotation;
+        rb.linearVelocity = savedState.velocity;
+
+        _currentHealth = savedState.health;
+        OnHealthChanged(_currentHealth/_maxHealth);
+
+        if (facingRight != savedState.isRight)
+        {
+            Flip();
+        }
+
+        SwitchState(savedState.enemyState);
+
+        _healthBarIsActive = savedState.healthBarIsActive;
+        _healthBarEnemy.gameObject.SetActive(savedState.healthBarIsActive);
+
+        patrolCounter = savedState.patrolCounter;
+    }
+
+    public void OnStartRewind()
+    {
+        rb.bodyType = RigidbodyType2D.Kinematic;
+    }
+
+    public void OnStopRewind()
+    {
+        rb.bodyType = RigidbodyType2D.Dynamic;
+    }
+    #endregion
+}
+
+public class EnemyRewindState
+{
+    public Vector3 position;
+    public Quaternion rotation;
+    public Vector2 velocity;
+    public float health;
+    public bool isRight;
+    public IEnemyState enemyState;
+    public bool isAlive;
+    public bool healthBarIsActive;
+    public float patrolCounter;
 }
