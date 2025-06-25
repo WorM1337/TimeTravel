@@ -18,7 +18,9 @@ public class TimeRewindManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            //DontDestroyOnLoad(gameObject);
+            // я решил убрать, потому что между сценами у нас измен€ютс€ объекты, а в states у нас
+            // есть инфа только по предыдущим объектам
         }
         else
         {
@@ -44,7 +46,9 @@ public class TimeRewindManager : MonoBehaviour
     {
         rewindables.Add(rewindable);
     }
-
+    //ќбнаружил, что сама логика unregister не совсем верна - если, мы отписываемс€ от этого объекта,
+    // то мы получим ошибки, при попытке rewind в промежуток времени, меньший, чем наибольшоее врем€,
+    // которое можно делать rewind - у нас в states останутьс€ состо€ни€ наших отписавшихс€
     public void UnregisterRewindable(IRewindable rewindable)
     {
         rewindables.Remove(rewindable);

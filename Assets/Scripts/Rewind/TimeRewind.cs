@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,11 +6,13 @@ public class TimeRewind : MonoBehaviour
 {
     private TimeRewindManager manager;
     private bool isRewinding = false;
+    private bool isAbleToRewind = true;
     private InputSystem_Actions inputActions;
     private float rewindCooldown = 10f;
     private float cooldownTimer = 0f;
     private float rewindTimer = 0f;
     [SerializeField] private AudioSource rewindAudioSource;
+    [SerializeField] private RewindUI rewindUI;
 
     void Awake()
     {
@@ -32,8 +35,8 @@ public class TimeRewind : MonoBehaviour
                 rewindAudioSource = gameObject.AddComponent<AudioSource>();
             }
         }
-
-        cooldownTimer = 0;
+        //cooldownTimer = 0f;
+        rewindUI.ChangeRewindIconColor(Color.green);
     }
 
     void OnEnable()
@@ -48,11 +51,6 @@ public class TimeRewind : MonoBehaviour
 
     void Update()
     {
-        if (cooldownTimer > 0f)
-        {
-            cooldownTimer -= Time.unscaledDeltaTime;
-        }
-
         if (isRewinding)
         {
             rewindTimer += Time.unscaledDeltaTime;
@@ -78,7 +76,10 @@ public class TimeRewind : MonoBehaviour
             Debug.LogError("Cannot start rewind: TimeRewindManager is null!");
             return;
         }
-        if (cooldownTimer > 0f || isRewinding) return;
+        if ((!isAbleToRewind) || isRewinding) return;
+
+        rewindUI.ChangeRewindIconColor(Color.yellow);
+        
         isRewinding = true;
         rewindTimer = 0f;
         manager.StartRewind();
@@ -101,12 +102,31 @@ public class TimeRewind : MonoBehaviour
             isRewinding = false;
             rewindTimer = 0f;
             manager.StopRewind();
-            cooldownTimer = rewindCooldown;
+            //cooldownTimer = rewindCooldown;
+            StartCoroutine(CooldownProcess());
+
 
             if (rewindAudioSource != null)
             {
                 rewindAudioSource.Stop();
             }
         }
+    }
+
+    private IEnumerator CooldownProcess()
+    {
+        isAbleToRewind = false;
+        rewindUI.ChangeRewindIconColor(Color.red);
+
+        var counter = 0f;
+        while(counter < rewindCooldown)
+        {
+            rewindUI.ChangeAngleOfFilling(1f - counter / rewindCooldown);
+            counter += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        isAbleToRewind = true;
+        rewindUI.ChangeRewindIconColor(Color.green);
     }
 }
