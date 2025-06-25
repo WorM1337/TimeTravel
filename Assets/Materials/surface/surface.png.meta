@@ -75,7 +75,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 272
+  spritePixelsToUnits: 262
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -140,12 +140,12 @@ TextureImporter:
       name: surface_0
       rect:
         serializedVersion: 2
-        x: 37
-        y: 689
-        width: 294
-        height: 296
+        x: 41
+        y: 694
+        width: 285
+        height: 284
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -162,12 +162,12 @@ TextureImporter:
       name: surface_1
       rect:
         serializedVersion: 2
-        x: 374
-        y: 688
-        width: 276
-        height: 297
+        x: 379
+        y: 694
+        width: 266
+        height: 284
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -184,12 +184,12 @@ TextureImporter:
       name: surface_2
       rect:
         serializedVersion: 2
-        x: 694
-        y: 688
-        width: 293
-        height: 297
+        x: 700
+        y: 694
+        width: 283
+        height: 283
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -206,12 +206,12 @@ TextureImporter:
       name: surface_3
       rect:
         serializedVersion: 2
-        x: 37
-        y: 376
-        width: 294
-        height: 279
+        x: 43
+        y: 384
+        width: 281
+        height: 264
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -228,12 +228,12 @@ TextureImporter:
       name: surface_4
       rect:
         serializedVersion: 2
-        x: 374
-        y: 376
-        width: 276
-        height: 279
+        x: 381
+        y: 384
+        width: 262
+        height: 262
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -250,12 +250,12 @@ TextureImporter:
       name: surface_5
       rect:
         serializedVersion: 2
-        x: 694
-        y: 376
-        width: 293
-        height: 279
+        x: 700
+        y: 384
+        width: 281
+        height: 265
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -272,12 +272,12 @@ TextureImporter:
       name: surface_6
       rect:
         serializedVersion: 2
-        x: 37
-        y: 45
-        width: 294
-        height: 296
+        x: 43
+        y: 54
+        width: 281
+        height: 279
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -294,12 +294,12 @@ TextureImporter:
       name: surface_7
       rect:
         serializedVersion: 2
-        x: 374
-        y: 45
-        width: 276
-        height: 296
+        x: 381
+        y: 52
+        width: 262
+        height: 281
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -316,12 +316,12 @@ TextureImporter:
       name: surface_8
       rect:
         serializedVersion: 2
-        x: 694
-        y: 45
-        width: 293
-        height: 296
+        x: 702
+        y: 51
+        width: 281
+        height: 281
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -338,7 +338,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 8167c86c9cd2748b4b1feaa3655c398a
     internalID: 0
     vertices: []
     indices: 
