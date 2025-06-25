@@ -1,0 +1,1274 @@
+fileFormatVersion: 2
+guid: 6af4bb63c04c641e2bd2f88c6b5251cf
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8392179515928143380
+    second: forest aset_0
+  - first:
+      213: -7291121882426211451
+    second: forest aset_1
+  - first:
+      213: -7783941782213045923
+    second: forest aset_2
+  - first:
+      213: -8630572108214549971
+    second: forest aset_3
+  - first:
+      213: -4109481928085392291
+    second: forest aset_4
+  - first:
+      213: -1100637915310620745
+    second: forest aset_5
+  - first:
+      213: -5957167338988244667
+    second: forest aset_6
+  - first:
+      213: 7028509002416274691
+    second: forest aset_7
+  - first:
+      213: -7717402072475815480
+    second: forest aset_8
+  - first:
+      213: -8343206638041826515
+    second: forest aset_9
+  - first:
+      213: -4271833432736651772
+    second: forest aset_10
+  - first:
+      213: -8936481683498938579
+    second: forest aset_11
+  - first:
+      213: 2251818403063802861
+    second: forest aset_12
+  - first:
+      213: 7779449810816004040
+    second: forest aset_13
+  - first:
+      213: 6565288257619266071
+    second: forest aset_14
+  - first:
+      213: -5787297125559453011
+    second: forest aset_15
+  - first:
+      213: 4580339692345282138
+    second: forest aset_16
+  - first:
+      213: -5226645431733721448
+    second: forest aset_17
+  - first:
+      213: -2822742789063203976
+    second: forest aset_18
+  - first:
+      213: 8753973429859227483
+    second: forest aset_19
+  - first:
+      213: 4626425481124665680
+    second: forest aset_20
+  - first:
+      213: 9114170329862311499
+    second: forest aset_21
+  - first:
+      213: -7313435901965233819
+    second: forest aset_22
+  - first:
+      213: 1070309236262311947
+    second: forest aset_23
+  - first:
+      213: 6396326318074706643
+    second: forest aset_24
+  - first:
+      213: -5492138114654202596
+    second: forest aset_25
+  - first:
+      213: -3124868556788821866
+    second: forest aset_26
+  - first:
+      213: 5550181317832165839
+    second: forest aset_27
+  - first:
+      213: -8021811342323735951
+    second: forest aset_28
+  - first:
+      213: -6375427063944052555
+    second: forest aset_29
+  - first:
+      213: 4484614621596070217
+    second: forest aset_30
+  - first:
+      213: 9194937578847270604
+    second: forest aset_31
+  - first:
+      213: -1492044567991033735
+    second: forest aset_32
+  - first:
+      213: -6639516867746321552
+    second: forest aset_33
+  - first:
+      213: -1057055366889924542
+    second: forest aset_34
+  - first:
+      213: -2216868041436064269
+    second: forest aset_35
+  - first:
+      213: 3873688859424690963
+    second: forest aset_36
+  - first:
+      213: 6988091710949057922
+    second: forest aset_37
+  - first:
+      213: 9212329274914399171
+    second: forest aset_38
+  - first:
+      213: -957835317004011125
+    second: forest aset_39
+  - first:
+      213: -202754443455423875
+    second: forest aset_40
+  - first:
+      213: 7820202390624549282
+    second: forest aset_41
+  - first:
+      213: -3094678303236685184
+    second: forest aset_42
+  - first:
+      213: 2410373028276278496
+    second: forest aset_43
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 57
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: forest aset_0
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 310
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 416e43a5ec2077470800000000000000
+      internalID: 8392179515928143380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_1
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 310
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58388e7274bb0da90800000000000000
+      internalID: -7291121882426211451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_2
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 310
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d51dedea032e9f390800000000000000
+      internalID: -7783941782213045923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_3
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 310
+        width: 62
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d224a71f46c0a3880800000000000000
+      internalID: -8630572108214549971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_4
+      rect:
+        serializedVersion: 2
+        x: 349
+        y: 310
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d54359995ff28f6c0800000000000000
+      internalID: -4109481928085392291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_5
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 310
+        width: 61
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bf759fb5afb9b0f0800000000000000
+      internalID: -1100637915310620745
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_6
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 310
+        width: 61
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 541fb0c1ed3e35da0800000000000000
+      internalID: -5957167338988244667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_7
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 311
+        width: 61
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30d38a5f2b74a8160800000000000000
+      internalID: 7028509002416274691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_8
+      rect:
+        serializedVersion: 2
+        x: 662
+        y: 311
+        width: 61
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c1373124b746e490800000000000000
+      internalID: -7717402072475815480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_9
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 309
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2bf5d354c9f63c80800000000000000
+      internalID: -8343206638041826515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_10
+      rect:
+        serializedVersion: 2
+        x: 818
+        y: 309
+        width: 98
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4062816402667b4c0800000000000000
+      internalID: -4271833432736651772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_11
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 254
+        width: 63
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2fc241a14d3bf380800000000000000
+      internalID: -8936481683498938579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_12
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 227
+        width: 61
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deb2e4d28e0104f10800000000000000
+      internalID: 2251818403063802861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_13
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 263
+        width: 62
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cfeaa9b26826fb60800000000000000
+      internalID: 7779449810816004040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_14
+      rect:
+        serializedVersion: 2
+        x: 349
+        y: 260
+        width: 63
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71a807bc2e69c1b50800000000000000
+      internalID: 6565288257619266071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_15
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 227
+        width: 63
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: daab36d3de36fafa0800000000000000
+      internalID: -5787297125559453011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_16
+      rect:
+        serializedVersion: 2
+        x: 521
+        y: 227
+        width: 30
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5eccd8bea2a09f30800000000000000
+      internalID: 4580339692345282138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_17
+      rect:
+        serializedVersion: 2
+        x: 599
+        y: 227
+        width: 30
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 896e79afba93777b0800000000000000
+      internalID: -5226645431733721448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_18
+      rect:
+        serializedVersion: 2
+        x: 664
+        y: 227
+        width: 59
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 873a79d836a93d8d0800000000000000
+      internalID: -2822742789063203976
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_19
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 226
+        width: 40
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5797f3347c5c7970800000000000000
+      internalID: 8753973429859227483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_20
+      rect:
+        serializedVersion: 2
+        x: 752
+        y: 227
+        width: 39
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0595046967d543040800000000000000
+      internalID: 4626425481124665680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_21
+      rect:
+        serializedVersion: 2
+        x: 827
+        y: 227
+        width: 46
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4e09d540a90c7e70800000000000000
+      internalID: 9114170329862311499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_22
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 146
+        width: 47
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56116cf9bc4718a90800000000000000
+      internalID: -7313435901965233819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_23
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 147
+        width: 52
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b081c3364908ade00800000000000000
+      internalID: 1070309236262311947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_24
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 147
+        width: 57
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3da3358a5e054c850800000000000000
+      internalID: 6396326318074706643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_25
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 147
+        width: 60
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1517aabb7108c3b0800000000000000
+      internalID: -5492138114654202596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_26
+      rect:
+        serializedVersion: 2
+        x: 351
+        y: 147
+        width: 59
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69090d69a9c32a4d0800000000000000
+      internalID: -3124868556788821866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_27
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 147
+        width: 50
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc94560a084360d40800000000000000
+      internalID: 5550181317832165839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_28
+      rect:
+        serializedVersion: 2
+        x: 506
+        y: 147
+        width: 63
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1722895e51dcca090800000000000000
+      internalID: -8021811342323735951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_29
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 147
+        width: 50
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b004322ddee587a0800000000000000
+      internalID: -6375427063944052555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_30
+      rect:
+        serializedVersion: 2
+        x: 670
+        y: 147
+        width: 47
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 941b1c2ec3d8c3e30800000000000000
+      internalID: 4484614621596070217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_31
+      rect:
+        serializedVersion: 2
+        x: 741
+        y: 147
+        width: 62
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc6f417d20bfa9f70800000000000000
+      internalID: 9194937578847270604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_32
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 147
+        width: 27
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 970e7dfde513b4be0800000000000000
+      internalID: -1492044567991033735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_33
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 19
+        width: 53
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07b24c12692bbd3a0800000000000000
+      internalID: -6639516867746321552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_34
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 19
+        width: 42
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2481b9c8eb59451f0800000000000000
+      internalID: -1057055366889924542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_35
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 19
+        width: 23
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f59944034a1c31e0800000000000000
+      internalID: -2216868041436064269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_36
+      rect:
+        serializedVersion: 2
+        x: 226
+        y: 19
+        width: 19
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31395647e7b12c530800000000000000
+      internalID: 3873688859424690963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_37
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 19
+        width: 93
+        height: 93
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28568f8f260baf060800000000000000
+      internalID: 6988091710949057922
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_38
+      rect:
+        serializedVersion: 2
+        x: 508
+        y: 19
+        width: 58
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c36431aaa4c8df70800000000000000
+      internalID: 9212329274914399171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_39
+      rect:
+        serializedVersion: 2
+        x: 587
+        y: 73
+        width: 56
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b89f6a0aad515b2f0800000000000000
+      internalID: -957835317004011125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_40
+      rect:
+        serializedVersion: 2
+        x: 662
+        y: 19
+        width: 63
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7a153d68ebaf2df0800000000000000
+      internalID: -202754443455423875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_41
+      rect:
+        serializedVersion: 2
+        x: 767
+        y: 0
+        width: 149
+        height: 129
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a936dc14a0f68c60800000000000000
+      internalID: 7820202390624549282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_42
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 19
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0820871ca7e7d05d0800000000000000
+      internalID: -3094678303236685184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: forest aset_43
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 19
+        width: 59
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e4179e9f7d537120800000000000000
+      internalID: 2410373028276278496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      forest aset_0: 8392179515928143380
+      forest aset_1: -7291121882426211451
+      forest aset_10: -4271833432736651772
+      forest aset_11: -8936481683498938579
+      forest aset_12: 2251818403063802861
+      forest aset_13: 7779449810816004040
+      forest aset_14: 6565288257619266071
+      forest aset_15: -5787297125559453011
+      forest aset_16: 4580339692345282138
+      forest aset_17: -5226645431733721448
+      forest aset_18: -2822742789063203976
+      forest aset_19: 8753973429859227483
+      forest aset_2: -7783941782213045923
+      forest aset_20: 4626425481124665680
+      forest aset_21: 9114170329862311499
+      forest aset_22: -7313435901965233819
+      forest aset_23: 1070309236262311947
+      forest aset_24: 6396326318074706643
+      forest aset_25: -5492138114654202596
+      forest aset_26: -3124868556788821866
+      forest aset_27: 5550181317832165839
+      forest aset_28: -8021811342323735951
+      forest aset_29: -6375427063944052555
+      forest aset_3: -8630572108214549971
+      forest aset_30: 4484614621596070217
+      forest aset_31: 9194937578847270604
+      forest aset_32: -1492044567991033735
+      forest aset_33: -6639516867746321552
+      forest aset_34: -1057055366889924542
+      forest aset_35: -2216868041436064269
+      forest aset_36: 3873688859424690963
+      forest aset_37: 6988091710949057922
+      forest aset_38: 9212329274914399171
+      forest aset_39: -957835317004011125
+      forest aset_4: -4109481928085392291
+      forest aset_40: -202754443455423875
+      forest aset_41: 7820202390624549282
+      forest aset_42: -3094678303236685184
+      forest aset_43: 2410373028276278496
+      forest aset_5: -1100637915310620745
+      forest aset_6: -5957167338988244667
+      forest aset_7: 7028509002416274691
+      forest aset_8: -7717402072475815480
+      forest aset_9: -8343206638041826515
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
