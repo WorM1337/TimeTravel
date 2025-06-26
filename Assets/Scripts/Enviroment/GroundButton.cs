@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEngine.Events;
 [RequireComponent(typeof(Collider2D))]
 public class GroundButton : MonoBehaviour
 {
-    [SerializeField] private event Action _onButtonActive;
-    [SerializeField] private event Action _onButtonPerformed;
-    [SerializeField] private event Action _onButtonCanceled;
+    [SerializeField] private UnityEvent _onButtonActive;
+    [SerializeField] private UnityEvent _onButtonPerformed;
+    [SerializeField] private UnityEvent _onButtonCanceled;
 
     private Animator _anim;
 

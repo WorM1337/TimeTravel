@@ -478,18 +478,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
         {
             anim.SetBool("jumping", false);
 
-            if (_isFalling)
-            {
-                float fallHeight = _maxHeight - transform.position.y;
-
-                if (fallHeight > _minFallHeight)
-                {
-                    float damage = (fallHeight - _minFallHeight) * _damagePerMeter;
-                    TakeDamage(damage);
-                }
-
-                _isFalling = false;
-            }
+            
         }
 
         if (!_isAbleToJump && wasGrounded)

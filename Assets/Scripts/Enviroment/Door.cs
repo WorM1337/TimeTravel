@@ -25,7 +25,7 @@ public class Door : MonoBehaviour
         if(_isClosed)
         {
             if (_closing != null) StopCoroutine(_closing);
-            _closing = StartCoroutine(OpeningProcess(transform.localScale.y));
+            _opening = StartCoroutine(OpeningProcess(transform.localScale.y));
         }
     }
     private IEnumerator ClosingProcess(float startYScale)
