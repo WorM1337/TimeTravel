@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class SlowTimeAbility : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class SlowTimeAbility : MonoBehaviour
     private bool _isCulldown = false;
 
     private PlayerInput _playerInput;
-
+    private Player _player;
 
     private Coroutine _slowTimeProcess;
     private Coroutine _slowTimeCulldown;
@@ -22,6 +23,7 @@ public class SlowTimeAbility : MonoBehaviour
     private void Awake()
     {
         _playerInput = GetComponent<PlayerInput>();
+        _player = GetComponent<Player>();
 
         var slowTimeAction = _playerInput.actions["SlowTime"];
         slowTimeAction.performed += OnSlowTimePerformed;
@@ -31,6 +33,7 @@ public class SlowTimeAbility : MonoBehaviour
     }
     private IEnumerator SlowTimeProcess()
     {
+        _player.currentAbility = ActiveAbility.SlowTime;
         _isSlow = true;
         _isAbleToSlow = false;
 
@@ -43,7 +46,7 @@ public class SlowTimeAbility : MonoBehaviour
 
 
             counter += Time.unscaledDeltaTime;
-            yield return null;
+            yield return new WaitWhile(() => Time.timeScale == 0);
         }
 
         _isSlow = false;
@@ -53,6 +56,7 @@ public class SlowTimeAbility : MonoBehaviour
 
         _slowTimeUI.ChangeHourGlassColor(Color.red);
 
+        _player.currentAbility = ActiveAbility.None;
         _slowTimeCulldown = StartCoroutine(SlowTimeCulldown());
     }
 
@@ -65,7 +69,7 @@ public class SlowTimeAbility : MonoBehaviour
             _slowTimeUI.ChangeAngleOfFilling(1f - (float)counter / _culldownSlowTime);
             
             counter += Time.unscaledDeltaTime;
-            yield return null;
+            yield return new WaitWhile(() => Time.timeScale == 0);
         }
         _isAbleToSlow = true;
         _slowTimeUI.ChangeHourGlassColor(Color.green);
@@ -73,27 +77,28 @@ public class SlowTimeAbility : MonoBehaviour
 
     private void OnSlowTimePerformed(InputAction.CallbackContext context)
     {
-        if (TimeManager.instance.CurrentTimeSpeed != TimeSpeed.Slow && _isAbleToSlow)
+        if(_player.currentAbility != ActiveAbility.Rewind)
         {
-            TimeManager.instance.EditTimeSpeed(TimeSpeed.Slow);
-            
-            _slowTimeProcess = StartCoroutine(SlowTimeProcess());
-        }
-        else
-        {
-            if (_isSlow)
+            if (TimeManager.instance.CurrentTimeSpeed != TimeSpeed.Slow && _isAbleToSlow)
             {
-                TimeManager.instance.EditTimeSpeed(TimeSpeed.Normal);
+                TimeManager.instance.EditTimeSpeed(TimeSpeed.Slow);
 
-                StopCoroutine(_slowTimeProcess);
-                _isSlow = false;
+                _slowTimeProcess = StartCoroutine(SlowTimeProcess());
+            }
+            else
+            {
+                if (_isSlow)
+                {
+                    TimeManager.instance.EditTimeSpeed(TimeSpeed.Normal);
 
-                _slowTimeUI.ChangeHourGlassColor(Color.red);
+                    StopCoroutine(_slowTimeProcess);
+                    _isSlow = false;
 
-                _slowTimeCulldown = StartCoroutine(SlowTimeCulldown());
+                    _slowTimeUI.ChangeHourGlassColor(Color.red);
+
+                    _slowTimeCulldown = StartCoroutine(SlowTimeCulldown());
+                }
             }
         }
-
-        
     }
 }

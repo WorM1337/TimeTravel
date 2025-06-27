@@ -278,10 +278,10 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1834993343342319808}
   - {fileID: 4296287371161396921}
   - {fileID: 2643928872400376719}
   - {fileID: 4911554074766504059}
+  - {fileID: 1834993343342319808}
   m_Father: {fileID: 145686889954545637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -456,7 +456,7 @@ Transform:
   m_GameObject: {fileID: 1629252072539770865}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.5, y: 0, z: -10}
+  m_LocalPosition: {x: 2.5, y: 0.5054607, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -774,6 +774,7 @@ GameObject:
   - component: {fileID: 5111429187829606944}
   - component: {fileID: 4548809342882132834}
   - component: {fileID: 8200716748512227928}
+  - component: {fileID: 1888039829272345150}
   m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
@@ -985,6 +986,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 4906f8b7-ada5-45e1-8bfe-074894e2f4dc
     m_ActionName: 'Player/Rewind[/Keyboard/f]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e3d18110-0706-42fd-b186-e9486e246be8
+    m_ActionName: 'Player/Pause[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -1160,6 +1165,19 @@ CapsuleCollider2D:
   m_Offset: {x: -0.004319166, y: 0.0043191756}
   m_Size: {x: 0.16136166, y: 0.32136163}
   m_Direction: 0
+--- !u!114 &1888039829272345150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995751221145506605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f37be8bdcbf1fd14080e7fa36c40de1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pauseMenu: {fileID: 8289257934801982692}
 --- !u!1 &2304068292823679740
 GameObject:
   m_ObjectHideFlags: 0

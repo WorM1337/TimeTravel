@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class TimeRewind : MonoBehaviour
 {
@@ -14,8 +15,11 @@ public class TimeRewind : MonoBehaviour
     [SerializeField] private AudioSource rewindAudioSource;
     [SerializeField] private RewindUI rewindUI;
 
+    private Player _player;
     void Awake()
     {
+        _player = GetComponent<Player>();
+
         manager = TimeRewindManager.Instance;
         if (manager == null)
         {
@@ -71,23 +75,28 @@ public class TimeRewind : MonoBehaviour
 
     public void StartRewind()
     {
-        if (manager == null)
+        if(_player.currentAbility != ActiveAbility.SlowTime)
         {
-            Debug.LogError("Cannot start rewind: TimeRewindManager is null!");
-            return;
-        }
-        if ((!isAbleToRewind) || isRewinding) return;
+            if (manager == null)
+            {
+                Debug.LogError("Cannot start rewind: TimeRewindManager is null!");
+                return;
+            }
+            if ((!isAbleToRewind) || isRewinding) return;
 
-        rewindUI.ChangeRewindIconColor(Color.yellow);
+            _player.currentAbility = ActiveAbility.Rewind;
+            rewindUI.ChangeRewindIconColor(Color.yellow);
+
+            isRewinding = true;
+            rewindTimer = 0f;
+            manager.StartRewind();
+
+            if (rewindAudioSource != null && rewindAudioSource.clip != null)
+            {
+                rewindAudioSource.Play();
+            }
+        }
         
-        isRewinding = true;
-        rewindTimer = 0f;
-        manager.StartRewind();
-
-        if (rewindAudioSource != null && rewindAudioSource.clip != null)
-        {
-            rewindAudioSource.Play();
-        }
     }
 
     public void StopRewind()
@@ -101,6 +110,9 @@ public class TimeRewind : MonoBehaviour
         {
             isRewinding = false;
             rewindTimer = 0f;
+
+            _player.currentAbility = ActiveAbility.None;
+
             manager.StopRewind();
             //cooldownTimer = rewindCooldown;
             StartCoroutine(CooldownProcess());
@@ -122,7 +134,7 @@ public class TimeRewind : MonoBehaviour
         while(counter < rewindCooldown)
         {
             rewindUI.ChangeAngleOfFilling(1f - counter / rewindCooldown);
-            counter += Time.unscaledDeltaTime;
+            counter += Time.deltaTime;
             yield return null;
         }
 

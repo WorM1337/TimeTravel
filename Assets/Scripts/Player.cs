@@ -6,6 +6,12 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
 
+public enum ActiveAbility
+{
+    None,
+    Rewind,
+    SlowTime
+}
 public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 {
     [Header("Walking and Running")]
@@ -51,6 +57,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     private bool _isJumping = false;
     private bool _isGettingDown = false;
     
+    public ActiveAbility currentAbility = ActiveAbility.None;
 
     private float _jumpTimeCounter = 0;
     private float _moveTimeCounter = 0;
