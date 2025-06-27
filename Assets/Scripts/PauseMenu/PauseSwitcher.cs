@@ -18,6 +18,11 @@ public class PauseSwitcher : MonoBehaviour
 
     private void OnPausePerformed(InputAction.CallbackContext ctx)
     {
+        SwitchPause();
+    }
+
+    public void SwitchPause()
+    {
         _isPaused = !_isPaused;
         _pauseMenu.gameObject.SetActive(_isPaused);
 
