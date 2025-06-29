@@ -5,10 +5,10 @@ public class RestartManager : MonoBehaviour
 {
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneChanger.instance.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public void BackToMainMenu()
     {
-        SceneManager.LoadScene(0);
+        SceneChanger.instance.LoadScene(0);
     }
 }

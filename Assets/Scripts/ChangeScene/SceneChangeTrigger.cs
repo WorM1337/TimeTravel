@@ -15,7 +15,7 @@ public class SceneChangeTrigger : MonoBehaviour
     {
         if(collision.gameObject.GetComponent<Player>() != null)
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            SceneChanger.instance.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }
 }

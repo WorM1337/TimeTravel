@@ -7,19 +7,11 @@ public class SceneChanger : MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(this);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        instance = this;
     }
 
     public void LoadScene(int index)
     {
-        SceneManager.LoadScene(index);
+        LoadingWindow.SwitchScene(index);
     }
 }
