@@ -82,9 +82,12 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     private Bounds _bounds;
     private float _maxHeight;
     private bool _isFalling;
-    private Vector3 _spawnPosition;
+    public Vector3 RecentCheckPoint;
 
     private GameOverSwitcher _gameOverSwitcher;
+
+    [Header("UI")]
+    [SerializeField] private RespawnUI _respawnUI;
     void Awake()
     {
         _collider = GetComponent<Collider2D>();
@@ -111,7 +114,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
-        _spawnPosition = transform.position;
+        RecentCheckPoint = transform.position;
     }
 
     void Start()
@@ -531,10 +534,10 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     private void Die()
     {
         Debug.Log("Player died");
-        Respawn();
+        ResetLevel();
     }
 
-    private void Respawn()
+    private void ResetLevel()
     {
         _gameOverSwitcher.SwitchMenu();
 
@@ -561,7 +564,35 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
         //    1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor) * _gravityScale;
     }
 
-    
+    public void Respawn() // Переход к близжайшему чекпоинту
+    {
+        _respawnUI.PlayUI(Time.timeScale);
+        Time.timeScale = 0f;
+
+        transform.position = RecentCheckPoint;
+        _cameraFollowObject.transform.position = RecentCheckPoint;
+        _rigidbody.linearVelocity = Vector2.zero;
+        _rigidbody.angularVelocity = 0f;
+
+        _isJumping = false;
+        _isRunning = false;
+        _isAbleToJump = true;
+        _isFalling = false;
+        _maxHeight = transform.position.y;
+        _jumpTimeCounter = 0;
+        _moveTimeCounter = 0;
+
+        anim.SetBool("jumping", false);
+        anim.SetBool("running", false);
+        anim.SetFloat("moveX", 0f);
+
+        _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
+            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor) * _gravityScale;
+
+        
+    }
+
+
 }
 
 public class PlayerRewindState

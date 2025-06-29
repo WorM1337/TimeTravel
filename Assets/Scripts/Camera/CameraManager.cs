@@ -50,6 +50,12 @@ public class CameraManager : MonoBehaviour
         _normYPanAmount = _cinemachinePositionComposer.Damping.y;
     }
 
+    public void GoToPlayer()
+    {
+        Debug.Log(_currentCamera.Target.TrackingTarget.position);
+        _cinemachinePositionComposer.ForceCameraPosition(_currentCamera.Target.TrackingTarget.position, Quaternion.identity);
+    }
+
     #region Lerp the Y Damping
 
     public void LerpYDamping(bool isPlayerFalling)
