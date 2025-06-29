@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 
 public enum ActiveAbility
 {
@@ -83,12 +84,14 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     private bool _isFalling;
     private Vector3 _spawnPosition;
 
+    private GameOverSwitcher _gameOverSwitcher;
     void Awake()
     {
         _collider = GetComponent<Collider2D>();
         anim = GetComponent<Animator>();
         _playerInput = GetComponent<PlayerInput>();
         _rigidbody = GetComponent<Rigidbody2D>();
+        _gameOverSwitcher = GetComponent<GameOverSwitcher>();
         _cameraFollowObject = _cameraFollowGO.GetComponent<CameraFollowObject>();
         _fallSpeedYDampingChangeThreshold = CameraManager.instance._fallSpeedYDampingChangeThreshold;
 
@@ -533,27 +536,29 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
     private void Respawn()
     {
-        _currentHealth = _maxHealth;
-        OnHealthChanged?.Invoke(_currentHealth);
+        _gameOverSwitcher.SwitchMenu();
 
-        transform.position = _spawnPosition;
-        _rigidbody.linearVelocity = Vector2.zero;
-        _rigidbody.angularVelocity = 0f;
+        //_currentHealth = _maxHealth;
+        //OnHealthChanged?.Invoke(_currentHealth);
 
-        _isJumping = false;
-        _isRunning = false;
-        _isAbleToJump = true;
-        _isFalling = false;
-        _maxHeight = transform.position.y;
-        _jumpTimeCounter = 0;
-        _moveTimeCounter = 0;
+        //transform.position = _spawnPosition;
+        //_rigidbody.linearVelocity = Vector2.zero;
+        //_rigidbody.angularVelocity = 0f;
 
-        anim.SetBool("jumping", false);
-        anim.SetBool("running", false);
-        anim.SetFloat("moveX", 0f);
+        //_isJumping = false;
+        //_isRunning = false;
+        //_isAbleToJump = true;
+        //_isFalling = false;
+        //_maxHeight = transform.position.y;
+        //_jumpTimeCounter = 0;
+        //_moveTimeCounter = 0;
 
-        _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
-            1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor) * _gravityScale;
+        //anim.SetBool("jumping", false);
+        //anim.SetBool("running", false);
+        //anim.SetFloat("moveX", 0f);
+
+        //_rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
+        //    1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor) * _gravityScale;
     }
 
     
