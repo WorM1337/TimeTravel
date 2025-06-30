@@ -8,7 +8,7 @@ public class PatrolState : IEnemyState
     public void Enter(Enemy enemy)
     {
         _enemy = enemy;
-
+        _enemy.animator.SetBool("Move", true);
         patrolDirection = (enemy.facingRight ? 1f : -1f); // Начинаем с движения вправо
     }
 
@@ -34,6 +34,7 @@ public class PatrolState : IEnemyState
 
     public void Exit()
     {
+        _enemy.animator.SetBool("Move", false);
         _enemy.StopMoving();
     }
 }

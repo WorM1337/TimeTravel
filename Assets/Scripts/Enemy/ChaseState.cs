@@ -7,6 +7,7 @@ public class ChaseState : IEnemyState
     public void Enter(Enemy enemy)
     {
         _enemy = enemy;
+        _enemy.animator.SetBool("Move", true);
         Debug.Log("Враг начал преследование!");
     }
 
@@ -35,6 +36,7 @@ public class ChaseState : IEnemyState
 
     public void Exit()
     {
+        _enemy.animator.SetBool("Move", false);
         _enemy.StopMoving();
     }
 }

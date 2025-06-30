@@ -42,7 +42,7 @@ public class EnemyTrigger : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision == _enemy?.player?.GetComponent<Collider2D>())
+        if (_enemy.player != null && collision == _enemy.player.GetComponent<Collider2D>())
         {
             if (Type == TriggerType.Inner)
             {

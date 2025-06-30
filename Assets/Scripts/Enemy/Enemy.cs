@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
 
     [Header("Attack")]
     public float attackDamage = 5f;
+    public float attackCulldown = 2f;
+    public float attackFirstDelay = 1f;
 
     private IEnemyState currentState;
 
@@ -21,6 +24,7 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
     public float idleTime = 2f;
     [Header("UI")]
     [SerializeField] private HealthBarEnemy _healthBarEnemy;
+
 
     private bool _healthBarIsActive = false;
 
@@ -37,15 +41,8 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
     [NonSerialized] public bool IsPlayerInAttackRadius = false;
 
     private Rigidbody2D rb;
+    [NonSerialized] public Animator animator;
 
-    /*
-     public Vector3 position;
-    public Quaternion rotation;
-    public Vector2 velocity;
-    public float health;
-    public bool isRight;
-    public IEnemyState enemyState;
-     */
     private Vector3 positionForRewind;
     private Quaternion rotationForRewind;
     private Vector2 velocityForRewind;
@@ -58,6 +55,7 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         OnHealthChanged += _healthBarEnemy.SetHealthUI;
         _currentHealth = _maxHealth;
         patrolCounter = patrolTime;
@@ -115,14 +113,23 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
         OnHealthChanged?.Invoke(_currentHealth / _maxHealth);
         // Обновление прогрессбара
 
+        animator.SetBool("Hurt", true);
+
         Debug.Log($"Enemy took {damage} damage. Current health: {_currentHealth}");
 
         if (_currentHealth <= 0)
         {
-            Die();
+
+            animator.SetBool("Die", true);
+            SwitchState(new IdleState());
+
+
         }
     }
-
+    public void OnHurtEnded()
+    {
+        animator.SetBool("Hurt", false);
+    }
     public void Heal(float healAmount)
     {
         _currentHealth += healAmount;
@@ -143,10 +150,8 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
         return _maxHealth;
     }
 
-    private void Die()
+    private void Die() // Запускается как событие в аниматоре
     {
-        // Анимации
-
         gameObject.SetActive(false);
     }
 

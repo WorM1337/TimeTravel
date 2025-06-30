@@ -8,12 +8,13 @@ public class IdleState : IEnemyState
     public void Enter(Enemy enemy)
     {
         _enemy = enemy;
+        _enemy.animator.SetBool("Idle", true);
         idleCounter = _enemy.idleTime;
     }
 
     public void Exit()
     {
-        
+        _enemy.animator.SetBool("Idle", false);
     }
 
     public void Update()

@@ -2,14 +2,14 @@ using UnityEngine;
 
 public class AttackState : IEnemyState
 {
-    private float attackCooldown = 2f;
     private float timer;
 
     private Enemy _enemy;
     public void Enter(Enemy enemy)
     {
         _enemy = enemy;
-        timer = 0;
+        timer = _enemy.attackFirstDelay;
+        _enemy.animator.SetBool("Attack", true);
         enemy.StopMoving();
         Debug.Log("Враг атакует!");
     }
@@ -28,12 +28,13 @@ public class AttackState : IEnemyState
         {
             Debug.Log("Нанесён урон игроку!");
             _enemy.player.gameObject.GetComponent<Player>().TakeDamage(_enemy.attackDamage);
-            timer = attackCooldown;
+            timer = _enemy.attackCulldown;
         }
     }
 
     public void Exit()
     {
+        _enemy.animator.SetBool("Attack", false);
         // Можно добавить эффект окончания атаки
     }
 }
