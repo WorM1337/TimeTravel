@@ -1,5 +1,5 @@
 using UnityEngine;
-
+[RequireComponent (typeof(Animator))]
 public class RespawnUI : MonoBehaviour
 {
     private Animator _animator;
@@ -8,11 +8,17 @@ public class RespawnUI : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
+        if (_animator == null) Debug.Log("Animator for UI Respawn is null in Awake!");
     }
-    public void PlayUI(float oldTimeScale)
+    public void PlayUI()
     {
-        _oldTimeScale = oldTimeScale;
-        _animator.SetBool("HaveToRespawn", true);
+        if(Time.timeScale != 0f)
+        {
+            _oldTimeScale = Time.timeScale;
+            Time.timeScale = 0f;
+            if (_animator == null) Debug.Log("Animator for UI Respawn is null!");
+            _animator.SetBool("HaveToRespawn", true);
+        }
     }
     public void OnStartGettingDark()
     {

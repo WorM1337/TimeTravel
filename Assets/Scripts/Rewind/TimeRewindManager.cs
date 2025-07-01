@@ -78,14 +78,7 @@ public class TimeRewindManager : MonoBehaviour
             states.RemoveAt(states.Count - 1);
             for (int i = 0; i < rewindables.Count; i++)
             {
-                try
-                {
-                    rewindables[i].LoadState(previousStates[i]);
-                }
-                catch(Exception exeption)
-                {
-                    Debug.Log($"Îøèáêà! {rewindables[i]} | {previousStates[i]}");
-                } 
+                rewindables[i].LoadState(previousStates[i]);
             }
         }
         else

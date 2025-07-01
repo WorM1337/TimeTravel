@@ -698,9 +698,9 @@ RectTransform:
   - {fileID: 4296287371161396921}
   - {fileID: 2643928872400376719}
   - {fileID: 4911554074766504059}
+  - {fileID: 315097846629047104}
   - {fileID: 1834993343342319808}
   - {fileID: 5314583733064776394}
-  - {fileID: 315097846629047104}
   - {fileID: 1600101335828606418}
   m_Father: {fileID: 145686889954545637}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3323,7 +3323,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 654f8ad2fbe90f34d9ceeb2a78e328ca, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

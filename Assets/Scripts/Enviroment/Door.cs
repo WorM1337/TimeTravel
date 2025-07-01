@@ -8,8 +8,18 @@ public class Door : MonoBehaviour
     [SerializeField] private float _closeDuration;
     [SerializeField] private float _openDuration;
 
+    [Header("Follow object")]
+
+    [SerializeField] private Transform _followObjTransform;
+
     private Coroutine _closing;
     private Coroutine _opening;
+
+    private void Update()
+    {
+        _followObjTransform.localPosition = new Vector3(_followObjTransform.localPosition.x, -1f, _followObjTransform.localPosition.z);
+    }
+
     [ContextMenu("Close")]
     public void Close()
     {
@@ -27,6 +37,11 @@ public class Door : MonoBehaviour
             if (_closing != null) StopCoroutine(_closing);
             _opening = StartCoroutine(OpeningProcess(transform.localScale.y));
         }
+    }
+    public void Switch()
+    {
+        if (_isClosed) Open();
+        else Close();
     }
     private IEnumerator ClosingProcess(float startYScale)
     {
