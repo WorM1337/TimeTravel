@@ -31,8 +31,8 @@ public class UsualDamager : DamageObstacle
     {
         if (collision.collider.GetComponent<IDamageable>() is IDamageable obj)
         {
-            if(_culldownDamageProcess != null) StopCoroutine(_culldownDamageProcess);
-            IsAbleToDealDamage = true;
+            //if(_culldownDamageProcess != null) StopCoroutine(_culldownDamageProcess);
+            //IsAbleToDealDamage = true;
         }
     }
     public IEnumerator DamageCulldownProcess()
