@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class Door : MonoBehaviour
+public class Door : MonoBehaviour, IRewindable
 {
     [SerializeField] private float _usualSize;
     [SerializeField] private bool _isClosed;
@@ -14,6 +14,15 @@ public class Door : MonoBehaviour
 
     private Coroutine _closing;
     private Coroutine _opening;
+
+
+    private Vector3 scaleForRewind;
+    private bool isClosedForRewind;
+
+    private void Start()
+    {
+        TimeRewindManager.Instance.RegisterRewindable(this);
+    }
 
     private void Update()
     {
@@ -71,4 +80,57 @@ public class Door : MonoBehaviour
             yield return null;
         }
     }
+
+    public void SaveState()
+    {
+        scaleForRewind = transform.localScale;
+        isClosedForRewind = _isClosed;
+    }
+
+    public object GetState()
+    {
+        return new DoorRewindState
+        {
+            scale = scaleForRewind,
+            isClosed = isClosedForRewind
+        };
+    }
+
+    public void LoadState(object state)
+    {
+        StopAllCoroutines();
+        var savedState = (DoorRewindState)state;
+
+        transform.localScale = savedState.scale;
+        _isClosed = savedState.isClosed;
+
+        if (_isClosed && transform.localScale.y != _usualSize)
+        {
+            _isClosed = !_isClosed;
+            Close();
+        }
+        if ((!_isClosed) && transform.localScale.y != 0)
+        {
+            _isClosed = !_isClosed;
+            Open();
+        }
+    }
+
+    public void OnStartRewind()
+    {
+        var collider = GetComponent<Collider>();
+        if(collider != null) collider.isTrigger = true;
+    }
+
+    public void OnStopRewind()
+    {
+        var collider = GetComponent<Collider>();
+        if (collider != null) collider.isTrigger = false;
+    }
 }
+
+public class DoorRewindState
+{
+    public Vector3 scale;
+    public bool isClosed;
+} 
