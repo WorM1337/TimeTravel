@@ -60,7 +60,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     
     public ActiveAbility currentAbility = ActiveAbility.None;
 
-    [NonSerialized] public ButtonE CurrentButtonE = null;
+    [NonSerialized] public IInteractable CurrentInteractable = null;
 
     private float _jumpTimeCounter = 0;
     private float _moveTimeCounter = 0;
@@ -363,7 +363,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
-        CurrentButtonE?.Press();
+        CurrentInteractable?.Press();
     }
 
     private void TryGetDown(float movementY)

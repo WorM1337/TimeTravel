@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ButtonE : MonoBehaviour, IRewindable
+public class ButtonE : MonoBehaviour, IRewindable, IInteractable
 {
     [SerializeField] private UnityEvent[] _onButtonPerformedArray;
     private int _maxCountPress = 1; // 1 когда хотим, чтобы просто происходило событие по нажатию кнопки 
@@ -23,14 +23,14 @@ public class ButtonE : MonoBehaviour, IRewindable
     {
         if (collision.GetComponent<Player>() is Player player)
         {
-            player.CurrentButtonE = this;
+            player.CurrentInteractable = this;
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.GetComponent<Player>() is Player player)
         {
-            player.CurrentButtonE = null;
+            player.CurrentInteractable = null;
         }
     }
 
