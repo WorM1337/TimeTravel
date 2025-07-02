@@ -11,7 +11,6 @@ public class AttackState : IEnemyState
         timer = _enemy.attackFirstDelay;
         _enemy.animator.SetBool("Attack", true);
         enemy.StopMoving();
-        Debug.Log("Враг атакует!");
     }
 
     public void Update()
@@ -26,7 +25,6 @@ public class AttackState : IEnemyState
         }
         else if (timer <= 0)
         {
-            Debug.Log("Нанесён урон игроку!");
             _enemy.player.gameObject.GetComponent<Player>().TakeDamage(_enemy.attackDamage);
             timer = _enemy.attackCulldown;
         }
@@ -35,6 +33,5 @@ public class AttackState : IEnemyState
     public void Exit()
     {
         _enemy.animator.SetBool("Attack", false);
-        // Можно добавить эффект окончания атаки
     }
 }

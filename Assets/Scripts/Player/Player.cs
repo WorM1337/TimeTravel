@@ -60,6 +60,8 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     
     public ActiveAbility currentAbility = ActiveAbility.None;
 
+    [NonSerialized] public ButtonE CurrentButtonE = null;
+
     private float _jumpTimeCounter = 0;
     private float _moveTimeCounter = 0;
 
@@ -100,6 +102,9 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
         _bounds = _collider.bounds;
         _boxCastSize = new Vector2(_bounds.size.x * 0.9f, 1f);
+
+        var interactAction = _playerInput.actions["Interact"];
+        interactAction.performed += OnInteractPerformed;
 
         var jumpAction = _playerInput.actions["Jump"];
         jumpAction.performed += OnJumpPerformed;
@@ -329,7 +334,10 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor)) * _gravityScale;
     }
 
-    private void OnJumpPerformed(InputAction.CallbackContext context) => TryToJump();
+    private void OnJumpPerformed(InputAction.CallbackContext context)
+    {
+        TryToJump();
+    }
     private void OnJumpCanceled(InputAction.CallbackContext context)
     {
         if (_isJumping) _rigidbody.linearVelocityY = -_interraptedJumpVelocity;
@@ -351,6 +359,11 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
         if(context.ReadValue<Vector2>().x != 0)_cameraFollowObject.CheckToTurn();
+    }
+
+    private void OnInteractPerformed(InputAction.CallbackContext context)
+    {
+        CurrentButtonE?.Press();
     }
 
     private void TryGetDown(float movementY)
@@ -566,8 +579,9 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
     public void Respawn() // Переход к близжайшему чекпоинту
     {
-        _respawnUI.PlayUI(Time.timeScale);
-        Time.timeScale = 0f;
+        Debug.Log("Respawn...");
+        _respawnUI.PlayUI();
+        
 
         transform.position = RecentCheckPoint;
         _cameraFollowObject.transform.position = RecentCheckPoint;

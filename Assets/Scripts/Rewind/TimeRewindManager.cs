@@ -72,20 +72,14 @@ public class TimeRewindManager : MonoBehaviour
 
     public void Rewind()
     {
+        Debug.Log($"Rewind. Count of states: {states.Count}");
         if (states.Count > 0)
         {
             object[] previousStates = states[states.Count - 1];
             states.RemoveAt(states.Count - 1);
             for (int i = 0; i < rewindables.Count; i++)
             {
-                try
-                {
-                    rewindables[i].LoadState(previousStates[i]);
-                }
-                catch(Exception exeption)
-                {
-                    Debug.Log($"Îøèáêà! {rewindables[i]} | {previousStates[i]}");
-                } 
+                rewindables[i].LoadState(previousStates[i]);
             }
         }
         else
@@ -110,5 +104,10 @@ public class TimeRewindManager : MonoBehaviour
         {
             rewindable.OnStopRewind();
         }
+    }
+    public void ClearStates()
+    {
+        states.Clear();
+        Debug.Log(states.Count);
     }
 }

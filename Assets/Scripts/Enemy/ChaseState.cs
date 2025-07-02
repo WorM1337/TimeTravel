@@ -8,7 +8,6 @@ public class ChaseState : IEnemyState
     {
         _enemy = enemy;
         _enemy.animator.SetBool("Move", true);
-        Debug.Log("Враг начал преследование!");
     }
 
     public void Update()

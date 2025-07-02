@@ -20,7 +20,7 @@ public class DamagerWIthRespawn : DamageObstacle
         if (collision.collider.GetComponent<IDamageable>() is IDamageable obj)
         {
             DealDamage(obj);
-            if(obj is Player player)
+            if(obj is Player player && player.GetCurrentHealth() != 0)
             {
                 player.Respawn();
             }
