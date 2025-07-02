@@ -15,6 +15,7 @@ public class Door : MonoBehaviour, IRewindable
     private Coroutine _closing;
     private Coroutine _opening;
 
+    private bool isWrapsActive;
 
     private Vector3 scaleForRewind;
     private bool isClosedForRewind;
@@ -22,11 +23,13 @@ public class Door : MonoBehaviour, IRewindable
     private void Start()
     {
         TimeRewindManager.Instance.RegisterRewindable(this);
+        if(_followObjTransform != null)
+            isWrapsActive = _followObjTransform.gameObject.activeSelf;
     }
 
     private void Update()
     {
-        _followObjTransform.localPosition = new Vector3(_followObjTransform.localPosition.x, -transform.localScale.y, _followObjTransform.localPosition.z);
+        if(_followObjTransform != null) _followObjTransform.localPosition = new Vector3(_followObjTransform.localPosition.x, -transform.localScale.y, _followObjTransform.localPosition.z);
     }
 
     [ContextMenu("Close")]
@@ -65,6 +68,15 @@ public class Door : MonoBehaviour, IRewindable
             counter += Time.deltaTime;
             yield return null;
         }
+        transform.localScale = new Vector3(transform.localScale.x, _usualSize, transform.localScale.z);
+    }
+    public void SetActivityOfWraps()
+    {
+        if (_followObjTransform != null)
+        {
+            _followObjTransform.gameObject.SetActive(!isWrapsActive);
+            isWrapsActive = !isWrapsActive;
+        }
     }
     private IEnumerator OpeningProcess(float startYScale)
     {
@@ -79,6 +91,7 @@ public class Door : MonoBehaviour, IRewindable
             counter += Time.deltaTime;
             yield return null;
         }
+        transform.localScale = new Vector3(transform.localScale.x, 0f, transform.localScale.z);
     }
 
     public void SaveState()

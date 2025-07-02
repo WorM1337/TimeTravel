@@ -72,6 +72,7 @@ public class TimeRewindManager : MonoBehaviour
 
     public void Rewind()
     {
+        Debug.Log($"Rewind. Count of states: {states.Count}");
         if (states.Count > 0)
         {
             object[] previousStates = states[states.Count - 1];
@@ -103,5 +104,10 @@ public class TimeRewindManager : MonoBehaviour
         {
             rewindable.OnStopRewind();
         }
+    }
+    public void ClearStates()
+    {
+        states.Clear();
+        Debug.Log(states.Count);
     }
 }

@@ -65,8 +65,11 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
         SwitchState(new PatrolState());
         TimeRewindManager.Instance.RegisterRewindable(this);
     }
-    
 
+    private void OnEnable()
+    {
+        Debug.Log("Enemy was enabled");
+    }
     void Update()
     {
         currentState.Update();
@@ -150,9 +153,15 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
         return _maxHealth;
     }
 
-    private void Die() // Запускается как событие в аниматоре
+    public void Die() // Запускается как событие в аниматоре
     {
+        isAlive = false;
         gameObject.SetActive(false);
+    }
+    public void Respawn()
+    {
+        isAlive = true;
+        gameObject.SetActive(true);
     }
 
     #region Rewind Logic
