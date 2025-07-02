@@ -26,7 +26,7 @@ public class Door : MonoBehaviour, IRewindable
 
     private void Update()
     {
-        _followObjTransform.localPosition = new Vector3(_followObjTransform.localPosition.x, -1f, _followObjTransform.localPosition.z);
+        _followObjTransform.localPosition = new Vector3(_followObjTransform.localPosition.x, -transform.localScale.y, _followObjTransform.localPosition.z);
     }
 
     [ContextMenu("Close")]
