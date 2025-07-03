@@ -25,6 +25,8 @@ public class MovingPlatform : MonoBehaviour, IRewindable
 
     private int _currentIndex = 0;
 
+    [SerializeField] private bool _isActive; 
+
     private bool _isRewind = false;
     private void Awake()
     {
@@ -40,7 +42,7 @@ public class MovingPlatform : MonoBehaviour, IRewindable
     }
     private void Update()
     {
-        if(!_isRewind) CheckWay();
+        if(!_isRewind && _isActive) CheckWay();
     }
 
     private IEnumerator MovingProcess(float startTime, WayPoint pointStart, WayPoint pointEnd)
@@ -57,7 +59,7 @@ public class MovingPlatform : MonoBehaviour, IRewindable
             //_rigidbody.MovePosition(newPosition);
             transform.position = newPosition;
             _movingCounter += Time.deltaTime;
-            yield return null;
+            yield return new WaitUntil(() => _isActive);
         }
 
         //_rigidbody.MovePosition(pointEnd.PointTransform.position);
@@ -75,7 +77,7 @@ public class MovingPlatform : MonoBehaviour, IRewindable
         while(_waitingCounter < currentWaitPoint.WaitTime)
         {
             _waitingCounter += Time.deltaTime;
-            yield return null;
+            yield return new WaitUntil(() => _isActive);
         }
         _waitingCounter = currentWaitPoint.WaitTime;
         _isWaiting = false;
@@ -109,6 +111,11 @@ public class MovingPlatform : MonoBehaviour, IRewindable
         }
     }
 
+    public void SwitchActivation()
+    {
+        _isActive = !_isActive;
+    }
+
     public void SaveState()
     {
         
@@ -125,6 +132,7 @@ public class MovingPlatform : MonoBehaviour, IRewindable
             isMoving = _isMoving,
             isWaiting = _isWaiting,
             currentIndex = _currentIndex,
+            isActive = _isActive,
         };
     }
 
@@ -142,6 +150,7 @@ public class MovingPlatform : MonoBehaviour, IRewindable
         _isMoving = savedState.isMoving;    
         _isWaiting = savedState.isWaiting;
         _currentIndex = savedState.currentIndex;
+        _isActive = savedState.isActive;
     }
 
     public void OnStartRewind()
@@ -165,7 +174,6 @@ public class MovingPlatform : MonoBehaviour, IRewindable
         Debug.Log("индекс: " +  _currentIndex);
         Debug.Log("Wait: " + _isWaiting + "  " + "Move: " + _isMoving);
         Debug.Log("WaitC: " + _waitingCounter + "  " + "MoveC: " + _movingCounter);
-
         if (_currentPoints.Count == 1 && _isWaiting)
         {
             _waitingCoroutine = StartCoroutine(WaitingProcess(_waitingCounter, _currentPoints[0]));
@@ -193,4 +201,5 @@ public class MovingPlatformRewindState
     public bool isMoving;
     public bool isWaiting;
     public int currentIndex;
+    public bool isActive;
 }
