@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour, IDamageable, IRewindable
 {
-    [Header("Player")]
-    public Transform player;
+    [NonSerialized] public GameObject CurrentChaseObj = null;
 
+    [Header("Player")]
+    public GameObject player;
+    
     [Header("Attack")]
     public float attackDamage = 5f;
     public float attackCulldown = 2f;
@@ -37,8 +39,8 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
 
     private event Action<float> OnHealthChanged;
 
-    [NonSerialized] public bool IsPlayerInSearchRadius = false;
-    [NonSerialized] public bool IsPlayerInAttackRadius = false;
+    [NonSerialized] public bool IsChaseableInSearchRadius = false;
+    [NonSerialized] public bool IsChaseableInAttackRadius = false;
 
     private Rigidbody2D rb;
     [NonSerialized] public Animator animator;
@@ -66,10 +68,6 @@ public class Enemy : MonoBehaviour, IDamageable, IRewindable
         TimeRewindManager.Instance.RegisterRewindable(this);
     }
 
-    private void OnEnable()
-    {
-        Debug.Log("Enemy was enabled");
-    }
     void Update()
     {
         currentState.Update();

@@ -98,7 +98,7 @@ GameObject:
   - component: {fileID: 2375295396189255388}
   - component: {fileID: 584674914964697539}
   - component: {fileID: 5916126304833920206}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: OuterTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -181,7 +181,7 @@ GameObject:
   - component: {fileID: 3506203830163979577}
   - component: {fileID: 2072526875207958717}
   - component: {fileID: 3218548221022831700}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: InnerTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}

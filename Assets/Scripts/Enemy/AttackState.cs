@@ -19,13 +19,13 @@ public class AttackState : IEnemyState
 
         timer -= Time.deltaTime;
 
-        if (!enemy.IsPlayerInAttackRadius)
+        if (!enemy.IsChaseableInAttackRadius)
         {
             enemy.SwitchState(new ChaseState());
         }
         else if (timer <= 0)
         {
-            _enemy.player.gameObject.GetComponent<Player>().TakeDamage(_enemy.attackDamage);
+            if(_enemy.CurrentChaseObj == _enemy.player) _enemy.player.GetComponent<Player>().TakeDamage(_enemy.attackDamage);
             timer = _enemy.attackCulldown;
         }
     }

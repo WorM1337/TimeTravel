@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 [System.Serializable]
@@ -17,41 +18,99 @@ public class EnemyTrigger : MonoBehaviour
                                   // И все они триггеры(isTrigger = true)!
 
 
+    private LayerMask _visibleLayerMask;
+
+
     private void Awake()
     {
+        _visibleLayerMask = LayerMask.GetMask("Default", "Ground", "Platform");
         _collider = GetComponent<Collider2D>();
-
-        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision == _enemy.player.GetComponent<Collider2D>())
+        if (collision.gameObject.GetComponent<Chaseable>())
         {
+            Debug.Log("Вошёл объект");
+
             if (Type == TriggerType.Inner)
             {
-                _enemy.IsPlayerInAttackRadius = true;
+                _enemy.IsChaseableInAttackRadius = true;
             }
             if (Type == TriggerType.Outer)
             {
-                _enemy.IsPlayerInSearchRadius = true;
+
+                Vector2 direction = (collision.transform.position - _enemy.transform.position).normalized;
+
+                RaycastHit2D hitForSearch = Physics2D.Raycast
+                (
+                    _enemy.gameObject.transform.position,
+                    direction,
+                    Vector2.Distance(collision.transform.position, _enemy.transform.position),
+                    _visibleLayerMask
+                );
+
+                if(hitForSearch.collider == null)
+                {
+                    Debug.Log("Враг заметил вас!");
+                    _enemy.IsChaseableInSearchRadius = true;
+                    _enemy.CurrentChaseObj = collision.gameObject;
+                }
+                else
+                {
+                    Debug.Log($"Коллайдер на пути: {hitForSearch.collider.gameObject}");
+                }
+                
             }
         }
         
     }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.GetComponent<Chaseable>())
+        {
+            if (Type == TriggerType.Outer)
+            {
+                var circle = GetComponent<CircleCollider2D>();
+
+                Vector2 direction = (collision.transform.position - _enemy.transform.position).normalized;
+
+                RaycastHit2D hitForSearch = Physics2D.Raycast
+                (
+                    _enemy.gameObject.transform.position,
+                    direction,
+                    Vector2.Distance(collision.transform.position, _enemy.transform.position),
+                    _visibleLayerMask
+                );
+                if (hitForSearch.collider == null)
+                {
+                    Debug.Log("Враг заметил вас!");
+                    _enemy.IsChaseableInSearchRadius = true;
+                    _enemy.CurrentChaseObj = collision.gameObject;
+                }
+                else if(_enemy.CurrentChaseObj == collision.gameObject)
+                {
+                    _enemy.IsChaseableInSearchRadius = false;
+                    _enemy.CurrentChaseObj = null;
+                }
+            }
+        }
+    }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (_enemy.player != null && collision == _enemy.player.GetComponent<Collider2D>())
+        if (_enemy.CurrentChaseObj == collision.gameObject)
         {
             if (Type == TriggerType.Inner)
             {
-                _enemy.IsPlayerInAttackRadius = false;
+                _enemy.IsChaseableInAttackRadius = false;
             }
             if (Type == TriggerType.Outer)
             {
-                _enemy.IsPlayerInSearchRadius = false;
+                _enemy.IsChaseableInSearchRadius = false;
+                _enemy.CurrentChaseObj = null;
             }
+
         }
     }
 }

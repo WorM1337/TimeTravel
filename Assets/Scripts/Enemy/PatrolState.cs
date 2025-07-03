@@ -26,7 +26,7 @@ public class PatrolState : IEnemyState
 
         _enemy.MoveTowards(patrolDirection);
 
-        if (_enemy.IsPlayerInSearchRadius)
+        if (_enemy.IsChaseableInSearchRadius)
         {
             _enemy.SwitchState(new ChaseState());
         }

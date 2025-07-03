@@ -8,29 +8,33 @@ public class ChaseState : IEnemyState
     {
         _enemy = enemy;
         _enemy.animator.SetBool("Move", true);
+        Debug.Log($"преследуется {enemy.CurrentChaseObj.name}");
     }
 
     public void Update()
     {
-        Enemy enemy = _enemy;
 
-        float direction = (enemy.player.position.x - enemy.transform.position.x);
+        if (_enemy.IsChaseableInAttackRadius)
+        {
+            _enemy.SwitchState(new AttackState());
+            return;
+        }
+        else if (!_enemy.IsChaseableInSearchRadius)
+        {
+            _enemy.SwitchState(new IdleState());
+            return;
+        }
+
+        float direction = (_enemy.CurrentChaseObj.transform.position.x - _enemy.transform.position.x);
 
         if (direction < 0 && _enemy.facingRight || direction > 0 && !_enemy.facingRight)
         {
             _enemy.Flip();
         }
 
-        enemy.MoveTowards(Mathf.Sign(direction));
+        _enemy.MoveTowards(Mathf.Sign(direction));
 
-        if (enemy.IsPlayerInAttackRadius)
-        {
-            enemy.SwitchState(new AttackState());
-        }
-        else if (!enemy.IsPlayerInSearchRadius)
-        {
-            enemy.SwitchState(new IdleState());
-        }
+        
     }
 
     public void Exit()
