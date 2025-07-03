@@ -13,7 +13,7 @@ public enum ActiveAbility
     Rewind,
     SlowTime
 }
-public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
+public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMovingPlatform
 {
     [Header("Walking and Running")]
     [SerializeField] private float _walkVelocity = 15.0f;
@@ -44,7 +44,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
     [SerializeField] private float _damagePerMeter = 5.714f;
 
     public event Action<float> OnHealthChanged; // Событие для UI
-    
 
     [Header("Camera Follow")]
     [SerializeField] GameObject _cameraFollowGO;
@@ -90,6 +89,9 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
     [Header("UI")]
     [SerializeField] private RespawnUI _respawnUI;
+
+    public Transform FirstParent { get; set; }
+
     void Awake()
     {
         _collider = GetComponent<Collider2D>();
@@ -102,6 +104,8 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
 
         _bounds = _collider.bounds;
         _boxCastSize = new Vector2(_bounds.size.x * 0.9f, 1f);
+
+        FirstParent = transform.parent;
 
         var interactAction = _playerInput.actions["Interact"];
         interactAction.performed += OnInteractPerformed;
@@ -606,7 +610,10 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable
         
     }
 
-
+    public void SetParent(Transform newParent)
+    {
+        transform.SetParent(newParent);
+    }
 }
 
 public class PlayerRewindState
