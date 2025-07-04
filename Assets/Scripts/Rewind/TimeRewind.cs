@@ -6,7 +6,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class TimeRewind : MonoBehaviour
 {
     private TimeRewindManager manager;
-    private bool isRewinding = false;
+    //private bool isRewinding = false; 
     private bool isAbleToRewind = true;
     private InputSystem_Actions inputActions;
     private float rewindCooldown = 10f;
@@ -55,7 +55,7 @@ public class TimeRewind : MonoBehaviour
 
     void Update()
     {
-        if (isRewinding)
+        if (TimeRewindManager.Instance.IsRewinding)
         {
             rewindTimer += Time.unscaledDeltaTime;
             if (rewindTimer >= manager.RewindDuration)
@@ -67,7 +67,7 @@ public class TimeRewind : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isRewinding && manager != null)
+        if (TimeRewindManager.Instance.IsRewinding && manager != null)
         {
             manager.Rewind();
         }
@@ -82,12 +82,12 @@ public class TimeRewind : MonoBehaviour
                 Debug.LogError("Cannot start rewind: TimeRewindManager is null!");
                 return;
             }
-            if ((!isAbleToRewind) || isRewinding) return;
+            if ((!isAbleToRewind) || TimeRewindManager.Instance.IsRewinding) return;
 
             _player.currentAbility = ActiveAbility.Rewind;
             rewindUI.ChangeRewindIconColor(Color.yellow);
 
-            isRewinding = true;
+            //isRewinding = true;
             rewindTimer = 0f;
             manager.StartRewind();
 
@@ -106,9 +106,9 @@ public class TimeRewind : MonoBehaviour
             Debug.LogError("Cannot stop rewind: TimeRewindManager is null!");
             return;
         }
-        if (isRewinding)
+        if (TimeRewindManager.Instance.IsRewinding)
         {
-            isRewinding = false;
+            //isRewinding = false;
             rewindTimer = 0f;
 
             _player.currentAbility = ActiveAbility.None;

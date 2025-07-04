@@ -12,6 +12,7 @@ public class TimeRewindManager : MonoBehaviour
     [SerializeField] public float RewindDuration = 3f;
     private float recordTimer = 0f;
     private int maxStates;
+    [SerializeField] private TimeRewind _timeRewinder;
 
     void Awake()
     {
@@ -83,7 +84,7 @@ public class TimeRewindManager : MonoBehaviour
         }
         else
         {
-            StopRewind();
+            _timeRewinder.StopRewind();
         }
     }
 
