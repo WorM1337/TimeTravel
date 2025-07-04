@@ -12,7 +12,7 @@ public class MovingPlatform : MonoBehaviour, IRewindable
 
     private Rigidbody2D _rigidbody;
 
-    [SerializeField] private List<WayPoint> _currentPoints;
+    private List<WayPoint> _currentPoints;
 
     float _movingCounter = 0f;
     float _waitingCounter = 0f;
@@ -20,17 +20,14 @@ public class MovingPlatform : MonoBehaviour, IRewindable
     private Coroutine _waitingCoroutine;
     private Coroutine _movingCoroutine;
 
-    [SerializeField] private bool _isMoving = false;
-    [SerializeField] private bool _isWaiting = false;
+    private bool _isMoving = false;
+    private bool _isWaiting = false;
 
-    [SerializeField] private int _currentIndex = 0;
+    private int _currentIndex = 0;
 
     [SerializeField] private bool _isActive; 
 
-    [SerializeField] private bool _isRewind = false;
-
-    [SerializeField] private int countOfMovingCoroutines = 0; // Debug
-    [SerializeField] private int countOfWaitingCoroutines = 0; // Debug
+    private bool _isRewind = false;
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -50,7 +47,6 @@ public class MovingPlatform : MonoBehaviour, IRewindable
 
     private IEnumerator MovingProcess(float startTime, WayPoint pointStart, WayPoint pointEnd)
     {
-        countOfMovingCoroutines++;
         _isMoving = true;
         _movingCounter = startTime;
 
@@ -72,11 +68,9 @@ public class MovingPlatform : MonoBehaviour, IRewindable
         _isMoving = false;
         _currentIndex = (_currentIndex + 1) % _wayPoints.Length;
         _currentPoints.RemoveAt(0);
-        countOfMovingCoroutines--;
     }
     private IEnumerator WaitingProcess(float startTimeWait, WayPoint currentWaitPoint)
     {
-        countOfWaitingCoroutines++;
         _isWaiting = true;
         _waitingCounter = startTimeWait;
 
@@ -88,7 +82,6 @@ public class MovingPlatform : MonoBehaviour, IRewindable
         _waitingCounter = currentWaitPoint.WaitTime;
         _isWaiting = false;
         _currentPoints.Add(_wayPoints[(_currentIndex+1)% _wayPoints.Length]);
-        countOfWaitingCoroutines--;
     }
 
     private void CheckWay()
@@ -164,7 +157,7 @@ public class MovingPlatform : MonoBehaviour, IRewindable
     {
         _isRewind = true;
 
-        if (_movingCoroutine != null) { StopCoroutine(_movingCoroutine); countOfMovingCoroutines--; }
+        if (_movingCoroutine != null) StopCoroutine(_movingCoroutine);
         else Debug.Log("Moving coroutine is null!");
         if (_waitingCoroutine != null) StopCoroutine(_waitingCoroutine);
         else Debug.Log("Waiting coroutine is null!");

@@ -16,6 +16,8 @@ public class CameraScaler : MonoBehaviour
     private bool _isIncreasing = false;
     private bool _isDecreasing = false;
 
+    [SerializeField] private Player _player;
+
     private void Start()
     {
         _oldSize = _camera.Lens.OrthographicSize;
@@ -54,10 +56,31 @@ public class CameraScaler : MonoBehaviour
         _camera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
         _isDecreasing = false;
     }
+
+    public void StopCoroutines()
+    {
+        if (_isIncreasing)
+        {
+            StopCoroutine(_increasingProcess);
+        }
+
+        if (_isDecreasing)
+        {
+            StopCoroutine(_decreasingProcess);
+        }
+
+        _isDecreasing = false;
+        _isIncreasing = false;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.GetComponent<Player>())
         {
+            if(_player.previouseCameraScaler != null && _player.previouseCameraScaler != this)
+            {
+                _player.previouseCameraScaler.StopCoroutines();
+            }
 
             if (_isDecreasing)
             {
@@ -77,6 +100,8 @@ public class CameraScaler : MonoBehaviour
                 _isIncreasing = false;
             }
             _decreasingProcess = StartCoroutine(DecreasingProcess());
+
+            _player.previouseCameraScaler = this;
         }
     }
 }
