@@ -91,6 +91,8 @@ public class LightWithChanger : MonoBehaviour, IRewindable, IInteractable
         _isOff = savedState.isOff;
 
         UpdateProperties();
+
+        if (_isOff) _light.intensity = 0;
     }
 
     public void OnStartRewind()
