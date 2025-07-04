@@ -1,0 +1,1 @@
+objMovingPlatform.vsp = -1;
