@@ -30,10 +30,12 @@ public class CameraScaler : MonoBehaviour
         while (counter < _scaleDuration)
         {
             _camera.Lens.OrthographicSize = Mathf.Lerp(_oldSize, _increasedSizeOfCamera, _scaleCurve.Evaluate(counter / _scaleDuration));
+            _camera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
             counter += Time.unscaledDeltaTime;
             yield return null;
         }
         _camera.Lens.OrthographicSize = _increasedSizeOfCamera;
+        _camera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
         _isIncreasing = false;
     }
     private IEnumerator DecreasingProcess()
@@ -44,10 +46,12 @@ public class CameraScaler : MonoBehaviour
         while (counter < _scaleDuration)
         {
             _camera.Lens.OrthographicSize = Mathf.Lerp(_increasedSizeOfCamera, _oldSize, _scaleCurve.Evaluate(counter / _scaleDuration));
+            _camera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
             counter += Time.unscaledDeltaTime;
             yield return null;
         }
         _camera.Lens.OrthographicSize = _oldSize;
+        _camera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
         _isDecreasing = false;
     }
     private void OnTriggerEnter2D(Collider2D collision)
