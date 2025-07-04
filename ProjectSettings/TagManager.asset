@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Platform
+  - Hazard
   layers:
   - Default
   - TransparentFX
@@ -39,6 +40,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: bgbg
+    uniqueID: 2060283259
+    locked: 0
   - name: Background
     uniqueID: 478276325
     locked: 0

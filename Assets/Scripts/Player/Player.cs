@@ -13,6 +13,7 @@ public enum ActiveAbility
     Rewind,
     SlowTime
 }
+
 public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMovingPlatform
 {
     [Header("Walking and Running")]
@@ -43,6 +44,12 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
     [SerializeField] private float _minFallHeight = 3f;
     [SerializeField] private float _damagePerMeter = 5.714f;
 
+    [Header("Hazard Damage")]
+    [SerializeField] private float _damageFactor = 1.0f; // Коэффициент урона на единицу скорости
+    [SerializeField] private float _minDamage = 5.0f; // Минимальный урон при стоянии в ловушке
+    [SerializeField] private float _damageInterval = 1.0f; // Интервал нанесения урона (в секундах)
+    private float _lastDamageTime; // Время последнего нанесения урона
+
     public event Action<float> OnHealthChanged; // Событие для UI
 
     [Header("Camera Follow")]
@@ -66,7 +73,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
 
     private HashSet<Platform> activePlatforms = new HashSet<Platform>();
     
-
     private PlayerInput _playerInput;
     private Animator anim;
     private Rigidbody2D _rigidbody;
@@ -127,6 +133,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
         _currentHealth = _maxHealth;
         OnHealthChanged?.Invoke(_currentHealth);
         RecentCheckPoint = transform.position;
+        _lastDamageTime = -_damageInterval; // Инициализация таймера
     }
 
     void Start()
@@ -225,8 +232,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
             CameraManager.instance.LerpedFromPlayerFalling = false;
             CameraManager.instance.LerpYDamping(false);
         }
-
-
     }
 
     private void FixedUpdate()
@@ -239,7 +244,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
         Move(movement);
         TryGetDown(movement.y);
 
-        if(!_isGettingDown)
+        if (!_isGettingDown)
         {
             CheckPlatformDown();
         }
@@ -283,7 +288,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
                 _isJumping = false;
                 _rigidbody.linearVelocityY = -_interraptedJumpVelocity;
             }
-            
         }
     }
 
@@ -335,7 +339,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
         else if (Math.Abs(_rigidbody.linearVelocity.y) > _maxVelocityY / TimeManager.instance.SlowFactor)
         {
             _rigidbody.linearVelocityY = _maxVelocityY / TimeManager.instance.SlowFactor *
-                (_rigidbody.linearVelocityY >= 0 ? 1f: -1f);
+                (_rigidbody.linearVelocityY >= 0 ? 1f : -1f);
         }
         _rigidbody.gravityScale = (TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor)) * _gravityScale;
@@ -345,6 +349,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
     {
         TryToJump();
     }
+
     private void OnJumpCanceled(InputAction.CallbackContext context)
     {
         if (_isJumping) _rigidbody.linearVelocityY = -_interraptedJumpVelocity;
@@ -365,12 +370,43 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        if(context.ReadValue<Vector2>().x != 0)_cameraFollowObject.CheckToTurn();
+        if (context.ReadValue<Vector2>().x != 0) _cameraFollowObject.CheckToTurn();
     }
 
     private void OnInteractPerformed(InputAction.CallbackContext context)
     {
         CurrentInteractable?.Press();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        // Проверяем, является ли объект Tilemap с ловушкой
+        if (other.CompareTag("Hazard") || other.gameObject.layer == LayerMask.NameToLayer("Traps"))
+        {
+            ApplyHazardDamage();
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        // Проверяем, является ли объект Tilemap с ловушкой
+        if (other.CompareTag("Hazard") || other.gameObject.layer == LayerMask.NameToLayer("Traps"))
+        {
+            // Наносим урон с интервалом
+            if (Time.time - _lastDamageTime >= _damageInterval)
+            {
+                ApplyHazardDamage();
+                _lastDamageTime = Time.time;
+            }
+        }
+    }
+
+    private void ApplyHazardDamage()
+    {
+        float speed = _rigidbody.linearVelocity.magnitude; // Получаем общую скорость
+        float damage = Mathf.Max(_minDamage, speed * _damageFactor); // Урон не меньше минимального
+        TakeDamage(damage); // Наносим урон
+        Debug.Log($"Игрок получил {damage} урона при скорости {speed}");
     }
 
     private void TryGetDown(float movementY)
@@ -383,7 +419,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
                 GetDown(platform);
             }
             activePlatforms.Clear();
-            if(_isGettingDown) _rigidbody.linearVelocityY = -_interraptedJumpVelocity / TimeManager.instance.SlowFactor;
+            if (_isGettingDown) _rigidbody.linearVelocityY = -_interraptedJumpVelocity / TimeManager.instance.SlowFactor;
         }
         else
         {
@@ -395,11 +431,11 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
     {
         var listOfPlatforms = GameObject.FindGameObjectsWithTag("Platform");
 
-        foreach(var platformObj in listOfPlatforms)
+        foreach (var platformObj in listOfPlatforms)
         {
             Platform platform = platformObj.GetComponent<Platform>();
 
-            if(platform == null)
+            if (platform == null)
             {
                 Debug.Log($"Платформа {platformObj.name} не имеет скрипта!");
                 continue;
@@ -450,15 +486,15 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
             ClearActivePlatforms(null);
         }
     }
+
     public void ClearActivePlatforms(Platform? current)
     {
-
-        foreach(var platform in activePlatforms)
+        foreach (var platform in activePlatforms)
         {
             if (current != platform) platform.ForbidCollision(_collider);
         }
 
-        if(activePlatforms.Contains(current))
+        if (activePlatforms.Contains(current))
         {
             activePlatforms = new HashSet<Platform> { current };
         }
@@ -483,6 +519,7 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
 
         return hitCeiling.collider != null;
     }
+
     private void CheckGroundAnimated()
     {
         Vector2 origin = (Vector2)transform.position - new Vector2(0, _bounds.size.y / 2 - _boxCastSize.y / 2);
@@ -510,8 +547,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
         if (_isAbleToJump && !wasGrounded)
         {
             anim.SetBool("jumping", false);
-
-            
         }
 
         if (!_isAbleToJump && wasGrounded)
@@ -560,35 +595,12 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
     private void ResetLevel()
     {
         _gameOverSwitcher.SwitchMenu();
-
-        //_currentHealth = _maxHealth;
-        //OnHealthChanged?.Invoke(_currentHealth);
-
-        //transform.position = _spawnPosition;
-        //_rigidbody.linearVelocity = Vector2.zero;
-        //_rigidbody.angularVelocity = 0f;
-
-        //_isJumping = false;
-        //_isRunning = false;
-        //_isAbleToJump = true;
-        //_isFalling = false;
-        //_maxHeight = transform.position.y;
-        //_jumpTimeCounter = 0;
-        //_moveTimeCounter = 0;
-
-        //anim.SetBool("jumping", false);
-        //anim.SetBool("running", false);
-        //anim.SetFloat("moveX", 0f);
-
-        //_rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
-        //    1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor) * _gravityScale;
     }
 
-    public void Respawn() // Переход к близжайшему чекпоинту
+    public void Respawn() // Переход к ближайшему чекпоинту
     {
         Debug.Log("Respawn...");
         _respawnUI.PlayUI();
-        
 
         transform.position = RecentCheckPoint;
         _cameraFollowObject.transform.position = RecentCheckPoint;
@@ -609,8 +621,6 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
 
         _rigidbody.gravityScale = TimeManager.instance.CurrentTimeSpeed == TimeSpeed.Normal ?
             1f : 1 / (TimeManager.instance.SlowFactor * TimeManager.instance.SlowFactor) * _gravityScale;
-
-        
     }
 
     public void SetParent(Transform newParent)
