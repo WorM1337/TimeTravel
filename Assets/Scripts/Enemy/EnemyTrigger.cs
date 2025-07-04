@@ -31,7 +31,6 @@ public class EnemyTrigger : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Chaseable>())
         {
-            Debug.Log("Вошёл объект");
 
             if (Type == TriggerType.Inner)
             {
@@ -52,7 +51,6 @@ public class EnemyTrigger : MonoBehaviour
 
                 if(hitForSearch.collider == null)
                 {
-                    Debug.Log("Враг заметил вас!");
                     _enemy.IsChaseableInSearchRadius = true;
                     _enemy.CurrentChaseObj = collision.gameObject;
                 }
@@ -84,7 +82,6 @@ public class EnemyTrigger : MonoBehaviour
                 );
                 if (hitForSearch.collider == null)
                 {
-                    Debug.Log("Враг заметил вас!");
                     _enemy.IsChaseableInSearchRadius = true;
                     _enemy.CurrentChaseObj = collision.gameObject;
                 }

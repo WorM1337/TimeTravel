@@ -4241,6 +4241,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   RewindDuration: 3
+  _timeRewinder: {fileID: 5111429187829606944}
 --- !u!1 &7756141447377683108
 GameObject:
   m_ObjectHideFlags: 0
