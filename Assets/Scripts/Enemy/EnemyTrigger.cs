@@ -23,7 +23,7 @@ public class EnemyTrigger : MonoBehaviour
 
     private void Awake()
     {
-        _visibleLayerMask = LayerMask.GetMask("Default", "Ground", "Platform");
+        _visibleLayerMask = LayerMask.GetMask("Default", "Ground");
         _collider = GetComponent<Collider2D>();
     }
 
