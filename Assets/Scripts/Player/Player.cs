@@ -92,6 +92,9 @@ public class Player : MonoBehaviour, IRewindable, IPlatforming, IDamageable, IMo
 
     public Transform FirstParent { get; set; }
 
+    // Camera scale
+
+    public CameraScaler previouseCameraScaler = null;
     void Awake()
     {
         _collider = GetComponent<Collider2D>();
