@@ -13,12 +13,12 @@ public class Counter : MonoBehaviour
     [SerializeField] private bool _isInvoked = false;
     public void PlusCount()
     {
-        _currentCount++;
+        _currentCount = Mathf.Min(_requiredCount, _currentCount + 1);
         CheckRequired();
     }
     public void MinusCount()
     {
-        _currentCount--;
+        _currentCount = Mathf.Min(0, _currentCount - 1);
         CheckRequired();
     }
 
