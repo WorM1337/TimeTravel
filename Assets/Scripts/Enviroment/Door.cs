@@ -105,7 +105,8 @@ public class Door : MonoBehaviour, IRewindable
         return new DoorRewindState
         {
             scale = scaleForRewind,
-            isClosed = isClosedForRewind
+            isClosed = isClosedForRewind,
+            isWrapsActive = isWrapsActive
         };
     }
 
@@ -127,6 +128,18 @@ public class Door : MonoBehaviour, IRewindable
             _isClosed = !_isClosed;
             Open();
         }
+
+        if(_followObjTransform !=null)
+        {
+            if(savedState.isWrapsActive && _followObjTransform.gameObject.activeSelf == false)
+            {
+                SetActivityOfWraps();
+            }
+            if ((!savedState.isWrapsActive) && _followObjTransform.gameObject.activeSelf == true)
+            {
+                SetActivityOfWraps();
+            }
+        }
     }
 
     public void OnStartRewind()
@@ -146,4 +159,5 @@ public class DoorRewindState
 {
     public Vector3 scale;
     public bool isClosed;
+    public bool isWrapsActive;
 } 
